@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Net.Http.Headers;
 using Microsoft.VisualBasic;
 using GUI.ViewModels.Authentication;
+using GUI.Views.Authentication;
 using Interfaces.Handlers.Authentication;
 using Models.Handlers.Authentication;
 
