@@ -1,10 +1,15 @@
 
+using System;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using Interfaces.Handlers.Authentication;
 
 namespace GUI.ViewModels.Authentication;
 
-public partial class ChangePasswordViewModel : ViewModelBase
+public partial class ChangePasswordViewModel(AuthenticationViewModel authenticationViewModel, IChangePassowrdHandler changePasswordHandler): ViewModelBase
 {
+    private readonly AuthenticationViewModel _authenticationViewModel = authenticationViewModel;
+    private readonly IChangePassowrdHandler _changePasswordHandler = changePasswordHandler;
 
     [ObservableProperty]
     private string _oldPassword = ""; 
@@ -15,4 +20,15 @@ public partial class ChangePasswordViewModel : ViewModelBase
     [ObservableProperty]
     private string _newPasswordConfirm = "";
     
+    public event Action<ChangePasswordViewModel>? OnButtonClicked;
+
+    [RelayCommand]
+    public void HandleClick()
+    { 
+        OnButtonClicked?.Invoke(this);
+
+        Console.WriteLine("Attempted Password Change");
+
+        _changePasswordHandler.HandlePasswordChange(_authenticationViewModel.Login, OldPassword, NewPassword, NewPasswordConfirm);
+    }
 }
