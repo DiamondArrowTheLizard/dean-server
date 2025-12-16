@@ -15,5 +15,8 @@ public partial class AuthenticationButtonViewModel(AuthenticationViewModel authe
     public void HandleClick()
     {
         Console.WriteLine("Attempted Authentication");
+        var login = _authenticationViewModel.Login;
+        var password = _authenticationViewModel.Password;
+        Console.WriteLine($"AuthVM contents:\nLogin: {login}\nPassword: {password}");
     }
 }
