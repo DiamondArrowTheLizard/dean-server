@@ -7,8 +7,6 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]
     private AuthenticationViewModel _authenticationViewModel;
 
-    [ObservableProperty]
-    private AuthenticationButtonViewModel _authenticationButtonViewModel;
 
     [ObservableProperty]
     private ChangePasswordViewModel _changePasswordViewModel;
@@ -21,13 +19,11 @@ public partial class MainWindowViewModel : ViewModelBase
 
     public MainWindowViewModel(
     AuthenticationViewModel authenticationViewModel,
-    AuthenticationButtonViewModel authenticationButtonViewModel,
     ChangePasswordViewModel changePasswordViewModel,
     ChangePasswordButtonViewModel changePasswordButtonViewModel
     )
     {
         AuthenticationViewModel = authenticationViewModel;
-        AuthenticationButtonViewModel = authenticationButtonViewModel;
         ChangePasswordViewModel = changePasswordViewModel;
         ChangePasswordButtonViewModel = changePasswordButtonViewModel;
 

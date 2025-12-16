@@ -68,7 +68,6 @@ public partial class App : Application
 
         collection.AddSingleton<AuthenticationViewModel>();
         collection.AddSingleton<ChangePasswordViewModel>();
-        collection.AddSingleton<AuthenticationButtonViewModel>();
         collection.AddSingleton<ChangePasswordButtonViewModel>();
 
 

@@ -1,10 +1,14 @@
 
+using System;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using Interfaces.Handlers.Authentication;
 
 namespace GUI.ViewModels.Authentication;
 
-public partial class AuthenticationViewModel : ViewModelBase
+public partial class AuthenticationViewModel(IAuthenticationHandler authenticationHandler) : ViewModelBase
 {
+    private readonly IAuthenticationHandler _authenticationHandler = authenticationHandler;
 
     [ObservableProperty]
     private string _login = ""; 
@@ -12,4 +16,17 @@ public partial class AuthenticationViewModel : ViewModelBase
     [ObservableProperty]
     private string _password = "";
 
+    public event Action<AuthenticationViewModel>? OnButtonClicked;
+
+    [RelayCommand]
+    public void HandleClick()
+    {
+        OnButtonClicked?.Invoke(this);
+
+        Console.WriteLine("Attempted Authentication");
+
+        Console.WriteLine($"AuthVM contents:\nLogin: {Login}\nPassword: {Password}");
+
+        _authenticationHandler.HandleAuthentication(Login, Password);
+    }
 }
