@@ -1,7 +1,6 @@
 <UserControl xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:GUI.ViewModels.Authentication"
-        xmlns:buttonAuth="clr-namespace:GUI.Views.Authentication"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         x:Class="GUI.Views.Authentication.AuthenticationView"
@@ -14,13 +13,18 @@
             <TextBox Text="{Binding Login}" Watermark="Enter your name"/>
             <TextBlock Margin="0 5">Пароль:</TextBlock>
             <TextBox Text="{Binding Password}" PasswordChar="*" Watermark="Enter your password"/>
-            <Button Width="100" Height="40"
-                    Command="{Binding HandleClickCommand}">
-                    <TextBlock Text="Войти"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                TextAlignment="Center"/>
-            </Button>
+
+            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Width="1000" Margin="20">
+                        <Button Command="{Binding HandleClickCommand}">
+                                <TextBlock Text="Войти"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"
+                                           TextAlignment="Center"/>
+                        </Button>
+                        <Button x:CompileBindings="False"
+                                Command="{Binding $parent[Window].DataContext.ChangePasswordCommand}">Сменить Пароль
+                        </Button>
+            </StackPanel>
 </StackPanel>
 
 

@@ -28,4 +28,5 @@ public partial class AuthenticationViewModel(IAuthenticationHandler authenticati
 
         _authenticationHandler.HandleAuthentication(Login, Password);
     }
+
 }

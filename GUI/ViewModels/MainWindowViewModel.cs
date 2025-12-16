@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using GUI.ViewModels.Authentication;
 
 namespace GUI.ViewModels;
@@ -29,4 +30,13 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         CurrentView = newView;
     }
+
+    [RelayCommand]
+    public void ChangePassword()
+    {
+        ChangeView(ChangePasswordViewModel);
+    }
+
+    [RelayCommand]
+    public void GoBackToLogin() => ChangeView(AuthenticationViewModel);
 }
