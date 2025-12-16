@@ -14,6 +14,11 @@ using GUI.ViewModels.Authentication;
 using GUI.Views.Authentication;
 using Interfaces.Handlers.Authentication;
 using Models.Handlers.Authentication;
+using Interfaces.Models;
+using Models.Models;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Models.Builders;
+using Interfaces.Builders;
 
 namespace GUI;
 
@@ -60,6 +65,10 @@ public partial class App : Application
     private static ServiceCollection ProvideServices()
     {
         var collection = new ServiceCollection();
+
+        collection.AddSingleton<IConnection, Connection>();
+        collection.AddSingleton<IDatabaseConnectionString, DatabaseConnectionString>();
+        collection.AddSingleton<IConnectionStringBuilder, ConnectionStringBuilder>();
 
         collection.AddSingleton<IAuthenticationHandler, AuthenticationHandler>();
         collection.AddSingleton<IChangePassowrdHandler, ChangePassowrdHandler>();
