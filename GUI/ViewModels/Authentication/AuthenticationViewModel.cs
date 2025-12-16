@@ -25,7 +25,6 @@ public partial class AuthenticationViewModel(IAuthenticationHandler authenticati
 
         Console.WriteLine("Attempted Authentication");
 
-        Console.WriteLine($"AuthVM contents:\nLogin: {Login}\nPassword: {Password}");
 
         _authenticationHandler.HandleAuthentication(Login, Password);
     }
