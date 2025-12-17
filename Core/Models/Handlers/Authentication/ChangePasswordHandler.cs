@@ -7,14 +7,12 @@ using Models.Builders;
 namespace Models.Handlers.Authentication;
 
 public class ChangePasswordHandler(
-    IConnectionStringBuilder connectionStringBuilder,
-    IAuthenticationHandler authenticationHandler,
-    IConnectionInfo connectionInfo
+    IConnectionInfo connectionInfo,
+    IDatabaseConnectionString databaseConnectionString
 ) : IChangePasswordHandler
 {
-    private readonly IConnectionStringBuilder _connectionStringBuilder = connectionStringBuilder;
-    private readonly IAuthenticationHandler _authenticationHandler = authenticationHandler;
     private readonly IConnectionInfo _connectionInfo = connectionInfo;
+    private readonly IDatabaseConnectionString _databaseConnectionString = databaseConnectionString;
 
     public bool HandlePasswordChange(string login, string oldPassword, string newPassword, string newPasswordConfirm)
     {
@@ -32,7 +30,8 @@ public class ChangePasswordHandler(
 
         var builder = new ConnectionStringBuilder(_connectionInfo);
         builder.Build();
-        string connectionString = builder.GetConnectionString();
+        _databaseConnectionString.ConnectionString = builder.GetConnectionString();
+        string connectionString = _databaseConnectionString.ConnectionString;
 
         if (string.IsNullOrWhiteSpace(_connectionInfo.Host) ||
             string.IsNullOrWhiteSpace(_connectionInfo.Username) ||

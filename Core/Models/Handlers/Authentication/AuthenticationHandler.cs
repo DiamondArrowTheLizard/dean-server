@@ -6,8 +6,9 @@ using Npgsql;
 
 namespace Models.Handlers.Authentication;
 
-public class AuthenticationHandler : IAuthenticationHandler
+public class AuthenticationHandler(IDatabaseConnectionString databaseConnectionString) : IAuthenticationHandler
 {
+    private readonly IDatabaseConnectionString _databaseConnectionString = databaseConnectionString;
     public bool HandleAuthentication(IConnectionInfo connection)
     {
         if (connection == null)
@@ -30,7 +31,8 @@ public class AuthenticationHandler : IAuthenticationHandler
             
             var builder = new ConnectionStringBuilder(connection);
             builder.Build();
-            string connectionString = builder.GetConnectionString();
+            _databaseConnectionString.ConnectionString = builder.GetConnectionString();
+            string connectionString = _databaseConnectionString.ConnectionString;
             Console.WriteLine($"\n\nСтрока подключения:\n{connectionString}");
 
 
