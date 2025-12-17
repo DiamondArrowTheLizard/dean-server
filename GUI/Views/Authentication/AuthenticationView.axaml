@@ -9,19 +9,19 @@
 <StackPanel HorizontalAlignment="Center" Orientation="Vertical" Width="1000" Margin="20">
             <Rectangle Height="350"/>
             <TextBlock FontSize="24" FontWeight="Bold" Margin="0 10">Добро пожаловать в информационную систему Деканата</TextBlock>
-            <TextBlock Margin="0 5">Логин:</TextBlock>
-            <TextBox Text="{Binding Login}" Watermark="Enter your name"/>
-            <TextBlock Margin="0 5">Пароль:</TextBlock>
-            <TextBox Text="{Binding Password}" PasswordChar="*" Watermark="Enter your password"/>
+            <TextBox Text="{Binding Login}" Watermark="Логин"/>
+            <TextBox Text="{Binding Password}" PasswordChar="*" Watermark="Пароль"/>
 
             <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Width="1000" Margin="20">
-                        <Button Command="{Binding HandleClickCommand}">
+                        <Button Margin="10 0" 
+                                Command="{Binding HandleClickCommand}">
                                 <TextBlock Text="Войти"
                                            HorizontalAlignment="Center"
                                            VerticalAlignment="Center"
                                            TextAlignment="Center"/>
                         </Button>
-                        <Button x:CompileBindings="False"
+                        <Button Margin="10 0"
+                                x:CompileBindings="False"
                                 Command="{Binding $parent[Window].DataContext.ChangePasswordCommand}">Сменить Пароль
                         </Button>
             </StackPanel>
