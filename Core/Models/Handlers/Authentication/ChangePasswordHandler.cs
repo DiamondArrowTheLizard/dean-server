@@ -42,17 +42,17 @@ public class ChangePasswordHandler(
             return false;
         }
 
-        using var deanSystemConnection = new NpgsqlConnection(connectionString);
-        deanSystemConnection.Open();
+        _connectionInfo.Connection = new NpgsqlConnection(connectionString);
+        _connectionInfo.Connection.Open();
 
         string safeLogin = login.Replace("\"", "\"\"");
         string safePassword = newPassword.Replace("'", "''");
 
         string sql = $"ALTER USER \"{safeLogin}\" WITH PASSWORD '{safePassword}';";
-        using var cmd = new NpgsqlCommand(sql, deanSystemConnection);
+        using var cmd = new NpgsqlCommand(sql, _connectionInfo.Connection);
         cmd.ExecuteNonQuery();
 
-        deanSystemConnection.Close();
+        _connectionInfo.Connection.Close();
         return true;
     }
 }

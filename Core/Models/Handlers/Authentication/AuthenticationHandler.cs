@@ -36,11 +36,11 @@ public class AuthenticationHandler(IDatabaseConnectionString databaseConnectionS
             Console.WriteLine($"\n\nСтрока подключения:\n{connectionString}");
 
 
-            using var deanSystemConnection = new NpgsqlConnection(connectionString);
-            deanSystemConnection.Open();
+            connection.Connection = new NpgsqlConnection(connectionString);
+            connection.Connection.Open();
 
 
-            using (var cmd = new NpgsqlCommand("SELECT current_user, current_database()", deanSystemConnection))
+            using (var cmd = new NpgsqlCommand("SELECT current_user, current_database()", connection.Connection))
             using (var reader = cmd.ExecuteReader())
             {
                 if (reader.Read())
@@ -72,5 +72,12 @@ public class AuthenticationHandler(IDatabaseConnectionString databaseConnectionS
             Console.WriteLine($"Общая ошибка: {ex.Message}");
             return false;
         }
+
+        finally
+        {
+            Console.WriteLine("Пользователь подключён, закрываем подключение");
+            connection.Connection?.Close();
+        }
+
     }
 }
