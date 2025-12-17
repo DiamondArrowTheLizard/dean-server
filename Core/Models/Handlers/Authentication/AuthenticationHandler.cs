@@ -13,7 +13,7 @@ public class AuthenticationHandler : IAuthenticationHandler
         if (connection == null)
             throw new ArgumentNullException(nameof(connection));
 
-        Console.WriteLine($"AuthVM contents:\nHost: {connection.Host}\nLogin: {connection.Username}\nPassword: {connection.Password}\nDatabase: {connection.Database}");
+        // Console.WriteLine($"AuthVM contents:\nHost: {connection.Host}\nLogin: {connection.Username}\nPassword: {connection.Password}\nDatabase: {connection.Database}");
 
         try
         {
