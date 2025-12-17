@@ -1,0 +1,28 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:GUI.ViewModels.Shared"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        x:Class="GUI.Views.Shared.TerminalWindowView"
+        x:DataType="vm:TerminalWindowViewModel">
+
+<StackPanel HorizontalAlignment="Center" Orientation="Vertical" Width="1000">
+    <TextBox Width="1900" Height="800" 
+             AcceptsReturn="true"
+             HorizontalAlignment="Center"
+             Text="{Binding QueryString}"/>
+    <Button Command="{Binding ExecQueryCommand}">
+            <TextBlock Text="Выполнить Запрос"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center" 
+                    TextAlignment="Center"/>
+    </Button>
+    <TextBox Width="1900" Height="250" 
+            IsReadOnly="true"
+            HorizontalAlignment="Center" 
+            AcceptsReturn="true"
+            Text="{Binding OutputString}"/>
+</StackPanel>
+
+
+</UserControl>

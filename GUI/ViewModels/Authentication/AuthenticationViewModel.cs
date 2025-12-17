@@ -26,8 +26,6 @@ public partial class AuthenticationViewModel(
     [RelayCommand]
     public void HandleClick()
     {
-        OnButtonClicked?.Invoke(this);
-
         Console.WriteLine("Attempted Authentication");
         _connection.Host = "localhost";
         _connection.Username = Login;
@@ -35,6 +33,8 @@ public partial class AuthenticationViewModel(
         _connection.Database = "DeanServer";
 
         _authenticationHandler.HandleAuthentication(_connection);
+
+        OnButtonClicked?.Invoke(this);
     }
 
 }

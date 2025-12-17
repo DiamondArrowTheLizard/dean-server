@@ -19,6 +19,7 @@ using Models.Models;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Models.Builders;
 using Interfaces.Builders;
+using GUI.ViewModels.Shared;
 
 namespace GUI;
 
@@ -70,15 +71,14 @@ public partial class App : Application
         collection.AddSingleton<IDatabaseConnectionString, DatabaseConnectionString>();
         collection.AddSingleton<IConnectionStringBuilder, ConnectionStringBuilder>();
 
-        collection.AddSingleton<IAuthenticationHandler, AuthenticationHandler>();
-        collection.AddSingleton<IChangePasswordHandler, ChangePasswordHandler>();
+        collection.AddTransient<IAuthenticationHandler, AuthenticationHandler>();
+        collection.AddTransient<IChangePasswordHandler, ChangePasswordHandler>();
 
         collection.AddSingleton<MainWindowViewModel>();
 
         collection.AddSingleton<AuthenticationViewModel>();
-        collection.AddSingleton<ChangePasswordViewModel>();
-
-
+        collection.AddTransient<ChangePasswordViewModel>();
+        collection.AddTransient<TerminalWindowViewModel>();
 
 
         return collection;
