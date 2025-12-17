@@ -30,7 +30,6 @@ public class AuthenticationHandler : IAuthenticationHandler
             
             var builder = new ConnectionStringBuilder(connection);
             builder.Build();
-            
             string connectionString = builder.GetConnectionString();
             Console.WriteLine($"\n\nСтрока подключения:\n{connectionString}");
 

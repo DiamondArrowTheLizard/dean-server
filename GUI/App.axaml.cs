@@ -71,7 +71,7 @@ public partial class App : Application
         collection.AddSingleton<IConnectionStringBuilder, ConnectionStringBuilder>();
 
         collection.AddSingleton<IAuthenticationHandler, AuthenticationHandler>();
-        collection.AddSingleton<IChangePassowrdHandler, ChangePassowrdHandler>();
+        collection.AddSingleton<IChangePassowrdHandler, ChangePasswordHandler>();
 
         collection.AddSingleton<MainWindowViewModel>();
 
