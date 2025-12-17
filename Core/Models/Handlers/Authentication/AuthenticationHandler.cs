@@ -34,24 +34,22 @@ public class AuthenticationHandler : IAuthenticationHandler
             string connectionString = builder.GetConnectionString();
             Console.WriteLine($"\n\nСтрока подключения:\n{connectionString}");
 
-            
-            using (var deanSystemConnection = new NpgsqlConnection(connectionString))
+
+            using var deanSystemConnection = new NpgsqlConnection(connectionString);
+            deanSystemConnection.Open();
+
+
+            using (var cmd = new NpgsqlCommand("SELECT current_user, current_database()", deanSystemConnection))
+            using (var reader = cmd.ExecuteReader())
             {
-                deanSystemConnection.Open();
-                
-                
-                using (var cmd = new NpgsqlCommand("SELECT current_user, current_database()", deanSystemConnection))
-                using (var reader = cmd.ExecuteReader())
+                if (reader.Read())
                 {
-                    if (reader.Read())
-                    {
-                        Console.WriteLine($"Успешное подключение: пользователь {reader.GetString(0)}, база данных {reader.GetString(1)}");
-                    }
+                    Console.WriteLine($"Успешное подключение: пользователь {reader.GetString(0)}, база данных {reader.GetString(1)}");
                 }
-                
-                Console.WriteLine("Соединение с БД деканата установлено");
-                return true;
             }
+
+            Console.WriteLine("Соединение с БД деканата установлено");
+            return true;
         }
         catch (PostgresException ex) when (ex.SqlState == "28P01") 
         {
