@@ -2,6 +2,7 @@
 using Interfaces.Builders;
 using Interfaces.Handlers.Authentication;
 using Interfaces.Models;
+using Npgsql;
 
 namespace Models.Handlers.Authentication;
 
@@ -24,5 +25,18 @@ public class AuthenticationHandler(
 
         Console.WriteLine($"\n\nDatabaseConnectionString contents:");
         Console.WriteLine($"{_databaseConnectionString.ConnectionString}");
+
+        using(var deanSystemConnection = new NpgsqlConnection(_databaseConnectionString.ConnectionString))
+        {
+            try {
+                deanSystemConnection.Open();
+                Console.WriteLine("Соединение с БД деканата установлено");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ошибка с соединением к серверу: {ex.Message}");
+            }
+
+        }
     }
 }
