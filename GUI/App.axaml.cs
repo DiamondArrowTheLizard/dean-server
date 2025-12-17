@@ -66,7 +66,7 @@ public partial class App : Application
     {
         var collection = new ServiceCollection();
 
-        collection.AddSingleton<IConnection, Connection>();
+        collection.AddSingleton<IConnectionInfo, ConnectionInfo>();
         collection.AddSingleton<IDatabaseConnectionString, DatabaseConnectionString>();
         collection.AddSingleton<IConnectionStringBuilder, ConnectionStringBuilder>();
 

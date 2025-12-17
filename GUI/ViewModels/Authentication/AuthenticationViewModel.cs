@@ -9,11 +9,11 @@ namespace GUI.ViewModels.Authentication;
 
 public partial class AuthenticationViewModel(
     IAuthenticationHandler authenticationHandler,
-    IConnection connection
+    IConnectionInfo connection
     ) : ViewModelBase
 {
     private readonly IAuthenticationHandler _authenticationHandler = authenticationHandler;
-    private readonly IConnection _connection = connection;
+    private readonly IConnectionInfo _connection = connection;
 
     [ObservableProperty]
     private string _login = ""; 

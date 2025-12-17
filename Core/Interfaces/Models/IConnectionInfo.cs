@@ -1,7 +1,7 @@
 
 namespace Interfaces.Models;
 
-public interface IConnection
+public interface IConnectionInfo
 {
     public string Host { get; set; }
     public string Username { get; set; }

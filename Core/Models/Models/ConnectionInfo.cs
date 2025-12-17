@@ -2,7 +2,7 @@ using Interfaces.Models;
 
 namespace Models.Models;
 
-public class Connection : IConnection
+public class ConnectionInfo : IConnectionInfo
 {
     public string Host { get; set; } = string.Empty;
     public string Username { get; set; } = string.Empty;
