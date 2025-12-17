@@ -6,10 +6,10 @@ using Interfaces.Handlers.Authentication;
 
 namespace GUI.ViewModels.Authentication;
 
-public partial class ChangePasswordViewModel(AuthenticationViewModel authenticationViewModel, IChangePassowrdHandler changePasswordHandler): ViewModelBase
+public partial class ChangePasswordViewModel(AuthenticationViewModel authenticationViewModel, IChangePasswordHandler changePasswordHandler): ViewModelBase
 {
     private readonly AuthenticationViewModel _authenticationViewModel = authenticationViewModel;
-    private readonly IChangePassowrdHandler _changePasswordHandler = changePasswordHandler;
+    private readonly IChangePasswordHandler _changePasswordHandler = changePasswordHandler;
 
     [ObservableProperty]
     private string _oldPassword = ""; 

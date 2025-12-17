@@ -1,7 +1,7 @@
 
 namespace Interfaces.Handlers.Authentication;
 
-public interface IChangePassowrdHandler
+public interface IChangePasswordHandler
 {
-    public void HandlePasswordChange(string login, string oldPassword, string newPassword, string newPasswordConfirm);
+    public bool HandlePasswordChange(string login, string oldPassword, string newPassword, string newPasswordConfirm);
 }
