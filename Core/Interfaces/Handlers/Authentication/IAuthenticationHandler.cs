@@ -5,5 +5,5 @@ namespace Interfaces.Handlers.Authentication;
 
 public interface IAuthenticationHandler
 {
-    public void HandleAuthentication(IConnectionInfo connection);
+    public bool HandleAuthentication(IConnectionInfo connection);
 }

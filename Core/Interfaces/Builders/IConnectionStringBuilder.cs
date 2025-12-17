@@ -5,10 +5,8 @@ namespace Interfaces.Builders;
 
 public interface IConnectionStringBuilder 
 {
-    public void AddHost();
-    public void AddUsername();
-    public void AddPassword();
-    public void AddDatabase();
 
-    public IDatabaseConnectionString GetResult();
+    public void Build();
+    public string GetConnectionString();
+    public bool ValidateConnection();
 }

@@ -1,56 +1,51 @@
-
 using Interfaces.Builders;
 using Interfaces.Models;
+using Npgsql;
 
 namespace Models.Builders;
 
-public class ConnectionStringBuilder(IConnectionInfo connection, IDatabaseConnectionString databaseConnectionString) : IConnectionStringBuilder
+public class ConnectionStringBuilder(IConnectionInfo connection) : IConnectionStringBuilder
 {
-    private readonly IConnectionInfo _connection = connection;
-    protected IDatabaseConnectionString? _databaseConnectionString = databaseConnectionString;
-    public IDatabaseConnectionString DatabaseConnectionString
+    private readonly IConnectionInfo _connection = connection ?? throw new ArgumentNullException(nameof(connection));
+    private readonly NpgsqlConnectionStringBuilder _npgsqlBuilder = [];
+
+    public void Build()
     {
-        get
+        _npgsqlBuilder.Host = _connection.Host;
+        _npgsqlBuilder.Username = _connection.Username;
+        _npgsqlBuilder.Password = _connection.Password;
+        _npgsqlBuilder.Database = _connection.Database;
+
+        
+        _npgsqlBuilder.SslMode = SslMode.Prefer; 
+        _npgsqlBuilder.Timeout = 15; 
+        _npgsqlBuilder.CommandTimeout = 30;
+    }
+
+    public string GetConnectionString()
+    {
+        if (string.IsNullOrWhiteSpace(_npgsqlBuilder.Host) ||
+            string.IsNullOrWhiteSpace(_npgsqlBuilder.Username))
         {
-            return _databaseConnectionString ?? throw new ArgumentNullException(nameof(_databaseConnectionString));
+            throw new InvalidOperationException("Connection string is not properly built. Call Build() first.");
+        }
+
+        return _npgsqlBuilder.ConnectionString;
+    }
+
+    public bool ValidateConnection()
+    {
+        try
+        {
+            using (var connection = new NpgsqlConnection(GetConnectionString()))
+            {
+                connection.Open();
+                return connection.State == System.Data.ConnectionState.Open;
+            }
+        }
+        catch
+        {
+            return false;
         }
     }
-
-    public void AddHost()
-    {
-        ArgumentNullException.ThrowIfNull(_databaseConnectionString);
-
-        string hostString = $"Host=\'{_connection.Host}\'";
-        _databaseConnectionString.ConnectionString = hostString;
-    }
-
-    public void AddUsername()
-    {
-        ArgumentNullException.ThrowIfNull(_databaseConnectionString);
-        ArgumentNullException.ThrowIfNullOrEmpty(_databaseConnectionString.ConnectionString);
-
-        string usernameString = $"Username=\'{_connection.Username}\'";
-        _databaseConnectionString.ConnectionString += $";{usernameString}";
-
-    }
-
-    public void AddPassword()
-    {
-        ArgumentNullException.ThrowIfNull(_databaseConnectionString);
-        ArgumentNullException.ThrowIfNullOrEmpty(_databaseConnectionString.ConnectionString);
-
-        string passwordString = $"Password=\'{_connection.Password}\'";
-        _databaseConnectionString.ConnectionString += $";{passwordString}";
-    }
-    
-    public void AddDatabase()
-    {
-        ArgumentNullException.ThrowIfNull(_databaseConnectionString);
-        ArgumentNullException.ThrowIfNullOrEmpty(_databaseConnectionString.ConnectionString);
-
-        string databaseString = $"Database=\'{_connection.Database}\'";
-        _databaseConnectionString.ConnectionString += $";{databaseString}";
-    }
-
-    public IDatabaseConnectionString GetResult() => _databaseConnectionString ?? throw new ArgumentNullException(nameof(_databaseConnectionString));
 }

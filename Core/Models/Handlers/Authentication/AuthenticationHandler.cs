@@ -1,42 +1,77 @@
-
 using Interfaces.Builders;
 using Interfaces.Handlers.Authentication;
 using Interfaces.Models;
+using Models.Builders;
 using Npgsql;
 
 namespace Models.Handlers.Authentication;
 
-public class AuthenticationHandler(
-    IDatabaseConnectionString databaseConnectionString,
-    IConnectionStringBuilder connectionStringBuilder
-) : IAuthenticationHandler
+public class AuthenticationHandler : IAuthenticationHandler
 {
-    private readonly IConnectionStringBuilder _connectionStringBuilder = connectionStringBuilder;
-    private IDatabaseConnectionString _databaseConnectionString = databaseConnectionString;
-    public void HandleAuthentication(IConnectionInfo connection)
+    public bool HandleAuthentication(IConnectionInfo connection)
     {
+        if (connection == null)
+            throw new ArgumentNullException(nameof(connection));
+
         Console.WriteLine($"AuthVM contents:\nHost: {connection.Host}\nLogin: {connection.Username}\nPassword: {connection.Password}\nDatabase: {connection.Database}");
-        _connectionStringBuilder.AddHost();
-        _connectionStringBuilder.AddUsername();
-        _connectionStringBuilder.AddPassword();
-        _connectionStringBuilder.AddDatabase();
 
-        _databaseConnectionString = _connectionStringBuilder.GetResult();
-
-        Console.WriteLine($"\n\nDatabaseConnectionString contents:");
-        Console.WriteLine($"{_databaseConnectionString.ConnectionString}");
-
-        using(var deanSystemConnection = new NpgsqlConnection(_databaseConnectionString.ConnectionString))
+        try
         {
-            try {
-                deanSystemConnection.Open();
-                Console.WriteLine("Соединение с БД деканата установлено");
-            }
-            catch (Exception ex)
+            
+            if (string.IsNullOrWhiteSpace(connection.Host) ||
+                string.IsNullOrWhiteSpace(connection.Username) ||
+                string.IsNullOrWhiteSpace(connection.Password) ||
+                string.IsNullOrWhiteSpace(connection.Database))
             {
-                Console.WriteLine($"Ошибка с соединением к серверу: {ex.Message}");
+                Console.WriteLine("Ошибка: обязательные поля (имя пользователя, пароль) не заполнены");
+                return false;
             }
 
+            
+            var builder = new ConnectionStringBuilder(connection);
+            builder.Build();
+            
+            string connectionString = builder.GetConnectionString();
+            Console.WriteLine($"\n\nСтрока подключения:\n{connectionString}");
+
+            
+            using (var deanSystemConnection = new NpgsqlConnection(connectionString))
+            {
+                deanSystemConnection.Open();
+                
+                
+                using (var cmd = new NpgsqlCommand("SELECT current_user, current_database()", deanSystemConnection))
+                using (var reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        Console.WriteLine($"Успешное подключение: пользователь {reader.GetString(0)}, база данных {reader.GetString(1)}");
+                    }
+                }
+                
+                Console.WriteLine("Соединение с БД деканата установлено");
+                return true;
+            }
+        }
+        catch (PostgresException ex) when (ex.SqlState == "28P01") 
+        {
+            Console.WriteLine($"Ошибка аутентификации: неверный пароль для пользователя '{connection.Username}'");
+            return false;
+        }
+        catch (PostgresException ex)
+        {
+            Console.WriteLine($"Ошибка PostgreSQL [{ex.SqlState}]: {ex.Message}");
+            return false;
+        }
+        catch (NpgsqlException ex)
+        {
+            Console.WriteLine($"Ошибка Npgsql: {ex.Message}");
+            return false;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Общая ошибка: {ex.Message}");
+            return false;
         }
     }
 }
