@@ -75,7 +75,7 @@ public class AuthenticationHandler(IDatabaseConnectionString databaseConnectionS
 
         finally
         {
-            Console.WriteLine("Пользователь подключён, закрываем подключение");
+            Console.WriteLine("Закрываем подключение");
             connection.Connection?.Close();
         }
 
