@@ -1,7 +1,7 @@
 
 using Interfaces.Models.Tables;
 
-namespace Models.Models;
+namespace Models.Models.Tables;
 
 public abstract class TableBase(int id) : ITable
 {
