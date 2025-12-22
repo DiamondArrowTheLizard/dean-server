@@ -14,13 +14,9 @@
             <MenuItem Header="_Справочники">
                 <MenuItem Header="Города" Command="{Binding OpenCityCommand}" />
                 <MenuItem Header="Улицы" Command="{Binding OpenStreetCommand}" />
-                <MenuItem Header="Факультеты" Command="{Binding OpenFacultyCommand}" />
-                <MenuItem Header="Учёные звания" Command="{Binding OpenAcademicTitleCommand}" />
-                <MenuItem Header="Учёные степени" Command="{Binding OpenAcademicDegreeCommand}" />
-                <MenuItem Header="Дисциплины" Command="{Binding OpenDisciplineCommand}" />
-                <MenuItem Header="Должности" Command="{Binding OpenPositionCommand}" />
-                <MenuItem Header="Аудитории" Command="{Binding OpenClassroomCommand}" />
             </MenuItem>
+            <MenuItem Header="_Настройки" Command="{Binding OpenSettingsCommand}" />
+            <MenuItem Header="_О программе" Command="{Binding OpenAboutCommand}" />
         </Menu>
         </DockPanel>
 </StackPanel>

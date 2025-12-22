@@ -7,5 +7,33 @@ namespace GUI.ViewModels.RoleMenus.Dean;
 
 public partial class DeanRoleViewModel : MenuViewModel
 {
+    public event Action? OnFacultyOpen;
+    public event Action? OnDepartmentOpen;
+    public event Action? OnClassroomOpen;
 
+    public override void SetupMenu(MainWindowViewModel view)
+    {
+        base.SetupMenu(view);
+        OnFacultyOpen += view.OpenFaculty;
+        OnDepartmentOpen += view.OpenDepartment;
+        OnClassroomOpen += view.OpenClassroom;
+    }
+
+    [RelayCommand]
+    public void OpenFaculty()
+    {
+        OnFacultyOpen?.Invoke();
+    }
+
+    [RelayCommand]
+    public void OpenDepartment()
+    {
+        OnDepartmentOpen?.Invoke();
+    }
+
+    [RelayCommand]
+    public void OpenClassroom()
+    {
+        OnClassroomOpen?.Invoke();
+    }
 }

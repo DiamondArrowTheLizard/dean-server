@@ -80,7 +80,6 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     public void OnAuthentication(AuthenticationViewModel authenticationViewModel)
     {
-        ChangeToWelcomeView(WelcomeScreenViewModel);
         switch(_connectionInfo.UserRole)
         {
             case "dean":
@@ -91,6 +90,8 @@ public partial class MainWindowViewModel : ViewModelBase
                 ChangeMenuView(MenuViewModel);
                 break;
         }
+
+        ChangeToWelcomeView(WelcomeScreenViewModel);
     }
 
     private void ChangeToWelcomeView(WelcomeScreenViewModel view)
@@ -111,6 +112,8 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     public void OpenTerminal() => ChangeView(TerminalWindowViewModel);
 
+    // TODO
+
     [RelayCommand]
     public void OpenCity() => ChangeView(TerminalWindowViewModel);
 
@@ -121,21 +124,12 @@ public partial class MainWindowViewModel : ViewModelBase
     public void OpenFaculty() => ChangeView(TerminalWindowViewModel);
 
     [RelayCommand]
-    public void OpenAcademicTitle() => ChangeView(TerminalWindowViewModel);
-
-    [RelayCommand]
-    public void OpenAcademicDegree() => ChangeView(TerminalWindowViewModel);
-
-    [RelayCommand]
-    public void OpenPosition() => ChangeView(TerminalWindowViewModel);
+    public void OpenDepartment() => ChangeView(TerminalWindowViewModel);
 
     [RelayCommand]
     public void OpenDiscipline() => ChangeView(TerminalWindowViewModel);
 
     [RelayCommand]
     public void OpenClassroom() => ChangeView(TerminalWindowViewModel);
-
-    [RelayCommand]
-    public void OpenKnowledgeCheckType() => ChangeView(TerminalWindowViewModel);
 
 }
