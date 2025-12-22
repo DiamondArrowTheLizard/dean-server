@@ -1,3 +1,5 @@
+using System;
+using CommunityToolkit.Mvvm.Input;
 using GUI.ViewModels.Shared;
 using Interfaces.Models;
 

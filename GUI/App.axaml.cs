@@ -23,6 +23,7 @@ using GUI.ViewModels.Shared;
 using Interfaces.Handlers.Shared;
 using Models.Handlers.Shared;
 using System.Transactions;
+using GUI.ViewModels.RoleWindows.Dean;
 
 namespace GUI;
 
@@ -82,6 +83,8 @@ public partial class App : Application
 
         collection.AddSingleton<MainWindowViewModel>();
         collection.AddSingleton<WelcomeScreenViewModel>();
+
+        collection.AddSingleton<DeanRoleViewModel>();
 
         collection.AddSingleton<AuthenticationViewModel>();
         collection.AddTransient<ChangePasswordViewModel>();

@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using GUI.ViewModels.Authentication;
+using GUI.ViewModels.RoleWindows.Dean;
 using GUI.ViewModels.Shared;
 using Interfaces.Models;
 
@@ -23,6 +24,9 @@ public partial class MainWindowViewModel : ViewModelBase
     private WelcomeScreenViewModel _welcomeScreenViewModel;
 
     [ObservableProperty]
+    DeanRoleViewModel _deanRoleViewModel;
+
+    [ObservableProperty]
     private ViewModelBase _currentView;
 
 
@@ -31,21 +35,23 @@ public partial class MainWindowViewModel : ViewModelBase
     AuthenticationViewModel authenticationViewModel,
     ChangePasswordViewModel changePasswordViewModel,
     TerminalWindowViewModel terminalWindowViewModel,
-    WelcomeScreenViewModel welcomeScreenViewModel
+    WelcomeScreenViewModel welcomeScreenViewModel,
+    DeanRoleViewModel deanRoleViewModel
     )
     {
         _connectionInfo = connectionInfo;
-        
+
         AuthenticationViewModel = authenticationViewModel;
         ChangePasswordViewModel = changePasswordViewModel;
-        
+
         TerminalWindowViewModel = terminalWindowViewModel;
         WelcomeScreenViewModel = welcomeScreenViewModel;
+
+        DeanRoleViewModel = deanRoleViewModel;
 
         CurrentView = AuthenticationViewModel;
 
         AuthenticationViewModel.OnButtonClicked += OnAuthentication;
-        WelcomeScreenViewModel.OnOpenTerminal += OpenTerminal;
     }
 
     public void ChangeView(ViewModelBase newView)
@@ -66,9 +72,26 @@ public partial class MainWindowViewModel : ViewModelBase
     public void OpenTerminal() => ChangeView(TerminalWindowViewModel);
 
     [RelayCommand]
-    public void OnAuthentication(AuthenticationViewModel authenticationViewModel) 
+    public void OnAuthentication(AuthenticationViewModel authenticationViewModel)
     {
-        WelcomeScreenViewModel.GetUsernameAndSetMessage(_connectionInfo);
-        ChangeView(WelcomeScreenViewModel);
-    } 
+        switch (_connectionInfo.UserRole)
+        {
+            case "dean":
+                ChangeRoleView(DeanRoleViewModel);
+                break;
+
+            default:
+                ChangeRoleView(WelcomeScreenViewModel);
+                break;
+        }
+
+    }
+
+    private void ChangeRoleView(WelcomeScreenViewModel view)
+    {
+        view.GetUsernameAndSetMessage(_connectionInfo);
+        view.OnOpenTerminal += OpenTerminal;
+        ChangeView(view);
+
+    }
 }
