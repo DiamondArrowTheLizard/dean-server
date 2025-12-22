@@ -16,7 +16,7 @@ using Interfaces.Builders;
 using GUI.ViewModels.Shared;
 using Interfaces.Handlers.Shared;
 using Models.Handlers.Shared;
-using GUI.ViewModels.RoleWindows.Dean;
+using GUI.ViewModels.RoleMenus.Dean;
 using Interfaces.Factories;
 using Interfaces.Handlers.Tables;
 using Models.Handlers.Tables;
@@ -110,6 +110,8 @@ private static ServiceCollection ProvideServices()
     collection.AddTransient<ChangePasswordViewModel>();
     collection.AddTransient<TerminalWindowViewModel>();
     collection.AddSingleton<WelcomeScreenViewModel>();
+
+    collection.AddSingleton<MenuViewModel>();
     collection.AddSingleton<DeanRoleViewModel>();
 
     return collection;

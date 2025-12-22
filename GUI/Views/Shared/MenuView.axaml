@@ -1,0 +1,28 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:GUI.ViewModels.Shared"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        x:Class="GUI.Views.Shared.MenuView"
+        x:DataType="vm:MenuViewModel">
+
+<StackPanel HorizontalAlignment="Center" Orientation="Vertical" Width="1000" Margin="20">
+        <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="_Главное Меню" Command="{Binding OpenMenuCommand}" />
+            <MenuItem Header="_Терминал" Command="{Binding OpenTerminalCommand}"/>
+            <MenuItem Header="_Справочники">
+                <MenuItem Header="Города" Command="{Binding OpenCityCommand}" />
+                <MenuItem Header="Улицы" Command="{Binding OpenStreetCommand}" />
+                <MenuItem Header="Факультеты" Command="{Binding OpenFacultyCommand}" />
+                <MenuItem Header="Учёные звания" Command="{Binding OpenAcademicTitleCommand}" />
+                <MenuItem Header="Учёные степени" Command="{Binding OpenAcademicDegreeCommand}" />
+                <MenuItem Header="Дисциплины" Command="{Binding OpenDisciplineCommand}" />
+                <MenuItem Header="Должности" Command="{Binding OpenPositionCommand}" />
+                <MenuItem Header="Аудитории" Command="{Binding OpenClassroomCommand}" />
+            </MenuItem>
+        </Menu>
+        </DockPanel>
+</StackPanel>
+
+</UserControl>

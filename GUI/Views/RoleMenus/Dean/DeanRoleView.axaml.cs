@@ -1,6 +1,6 @@
 using Avalonia.Controls;
 
-namespace GUI.Views.RoleWindows.Dean;
+namespace GUI.Views.RoleMenus.Dean;
 
 public partial class DeanRoleView : UserControl
 {

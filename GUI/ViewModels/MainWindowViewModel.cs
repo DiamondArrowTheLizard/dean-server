@@ -2,7 +2,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using GUI.ViewModels.Authentication;
-using GUI.ViewModels.RoleWindows.Dean;
+using GUI.ViewModels.RoleMenus.Dean;
 using GUI.ViewModels.Shared;
 using Interfaces.Models;
 
@@ -24,10 +24,16 @@ public partial class MainWindowViewModel : ViewModelBase
     private WelcomeScreenViewModel _welcomeScreenViewModel;
 
     [ObservableProperty]
+    private MenuViewModel _menuViewModel;
+
+    [ObservableProperty]
     DeanRoleViewModel _deanRoleViewModel;
 
     [ObservableProperty]
     private ViewModelBase _currentView;
+
+    [ObservableProperty]
+    private MenuViewModel? _currentMenu;
 
 
     public MainWindowViewModel(
@@ -36,6 +42,7 @@ public partial class MainWindowViewModel : ViewModelBase
     ChangePasswordViewModel changePasswordViewModel,
     TerminalWindowViewModel terminalWindowViewModel,
     WelcomeScreenViewModel welcomeScreenViewModel,
+    MenuViewModel menuViewModel,
     DeanRoleViewModel deanRoleViewModel
     )
     {
@@ -45,13 +52,17 @@ public partial class MainWindowViewModel : ViewModelBase
         ChangePasswordViewModel = changePasswordViewModel;
 
         TerminalWindowViewModel = terminalWindowViewModel;
+        
         WelcomeScreenViewModel = welcomeScreenViewModel;
+        MenuViewModel = menuViewModel;
 
         DeanRoleViewModel = deanRoleViewModel;
 
         CurrentView = AuthenticationViewModel;
+        CurrentMenu = null;
 
         AuthenticationViewModel.OnButtonClicked += OnAuthentication;
+        
     }
 
     public void ChangeView(ViewModelBase newView)
@@ -59,39 +70,72 @@ public partial class MainWindowViewModel : ViewModelBase
         CurrentView = newView;
     }
 
-    [RelayCommand]
-    public void ChangePassword()
+    public void ChangeMenuView(MenuViewModel newView)
     {
-        ChangeView(ChangePasswordViewModel);
+        CurrentMenu = newView;
+        CurrentMenu.SetupMenu(this);
     }
+
+
+    [RelayCommand]
+    public void OnAuthentication(AuthenticationViewModel authenticationViewModel)
+    {
+        ChangeToWelcomeView(WelcomeScreenViewModel);
+        switch(_connectionInfo.UserRole)
+        {
+            case "dean":
+                ChangeMenuView(DeanRoleViewModel);
+                break;
+
+            default:
+                ChangeMenuView(MenuViewModel);
+                break;
+        }
+    }
+
+    private void ChangeToWelcomeView(WelcomeScreenViewModel view)
+    {
+        view.GetUsernameAndSetMessage(_connectionInfo);
+        ChangeView(view);
+    }
+
+    [RelayCommand]
+    public void ChangePassword() => ChangeView(ChangePasswordViewModel);
 
     [RelayCommand]
     public void GoBackToLogin() => ChangeView(AuthenticationViewModel);
 
     [RelayCommand]
+    public void OpenMenu() => ChangeView(WelcomeScreenViewModel);
+
+    [RelayCommand]
     public void OpenTerminal() => ChangeView(TerminalWindowViewModel);
 
     [RelayCommand]
-    public void OnAuthentication(AuthenticationViewModel authenticationViewModel)
-    {
-        switch (_connectionInfo.UserRole)
-        {
-            case "dean":
-                ChangeRoleView(DeanRoleViewModel);
-                break;
+    public void OpenCity() => ChangeView(TerminalWindowViewModel);
 
-            default:
-                ChangeRoleView(WelcomeScreenViewModel);
-                break;
-        }
+    [RelayCommand]
+    public void OpenStreet() => ChangeView(TerminalWindowViewModel);
 
-    }
+    [RelayCommand]
+    public void OpenFaculty() => ChangeView(TerminalWindowViewModel);
 
-    private void ChangeRoleView(WelcomeScreenViewModel view)
-    {
-        view.GetUsernameAndSetMessage(_connectionInfo);
-        view.OnOpenTerminal += OpenTerminal;
-        ChangeView(view);
+    [RelayCommand]
+    public void OpenAcademicTitle() => ChangeView(TerminalWindowViewModel);
 
-    }
+    [RelayCommand]
+    public void OpenAcademicDegree() => ChangeView(TerminalWindowViewModel);
+
+    [RelayCommand]
+    public void OpenPosition() => ChangeView(TerminalWindowViewModel);
+
+    [RelayCommand]
+    public void OpenDiscipline() => ChangeView(TerminalWindowViewModel);
+
+    [RelayCommand]
+    public void OpenClassroom() => ChangeView(TerminalWindowViewModel);
+
+    [RelayCommand]
+    public void OpenKnowledgeCheckType() => ChangeView(TerminalWindowViewModel);
+
 }

@@ -18,8 +18,6 @@ public partial class WelcomeScreenViewModel : ViewModelBase
     [ObservableProperty]
     private string _userRole = string.Empty;
 
-    public event Action? OnOpenTerminal;
-
     public WelcomeScreenViewModel(IConnectionInfo connectionInfo)
     {
         _connectionInfo = connectionInfo;
@@ -31,12 +29,6 @@ public partial class WelcomeScreenViewModel : ViewModelBase
         Username = connectionInfo.Username;
         UserRole = connectionInfo.UserRole; 
         WelcomeMessage = $"{Username} ({UserRole}), Добро пожаловать в информационную систему деканата!";
-    }
-
-    [RelayCommand]
-    public void OpenTerminal()
-    {
-        OnOpenTerminal?.Invoke();
     }
 
 }

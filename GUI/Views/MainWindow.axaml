@@ -3,11 +3,11 @@
         xmlns:vm="using:GUI.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="1920" d:DesignHeight="1080"
+        mc:Ignorable="d" 
         x:Class="GUI.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
-        Title="GUI">
+        Title="Информационная система деканата">
 
     <Design.DataContext>
         <!-- This only sets the DataContext for the previewer in an IDE,
@@ -15,6 +15,9 @@
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-    <ContentControl Content="{Binding CurrentView}"></ContentControl>
+    <StackPanel>
+        <ContentControl Content="{Binding CurrentMenu}"></ContentControl>
+        <ContentControl Content="{Binding CurrentView}"></ContentControl>
+    </StackPanel>
 
 </Window>
