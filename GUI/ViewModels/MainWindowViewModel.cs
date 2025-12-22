@@ -45,6 +45,7 @@ public partial class MainWindowViewModel : ViewModelBase
         CurrentView = AuthenticationViewModel;
 
         AuthenticationViewModel.OnButtonClicked += OnAuthentication;
+        WelcomeScreenViewModel.OnOpenTerminal += OpenTerminal;
     }
 
     public void ChangeView(ViewModelBase newView)
@@ -60,6 +61,9 @@ public partial class MainWindowViewModel : ViewModelBase
 
     [RelayCommand]
     public void GoBackToLogin() => ChangeView(AuthenticationViewModel);
+
+    [RelayCommand]
+    public void OpenTerminal() => ChangeView(TerminalWindowViewModel);
 
     [RelayCommand]
     public void OnAuthentication(AuthenticationViewModel authenticationViewModel) 

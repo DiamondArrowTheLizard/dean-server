@@ -1,5 +1,6 @@
 using System;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using Interfaces.Models;
 
 namespace GUI.ViewModels.Shared;
@@ -14,6 +15,11 @@ public partial class WelcomeScreenViewModel : ViewModelBase
     [ObservableProperty]
     private string _username = string.Empty;
 
+    [ObservableProperty]
+    private string _userRole = string.Empty;
+
+    public event Action? OnOpenTerminal;
+
     public WelcomeScreenViewModel(IConnectionInfo connectionInfo)
     {
         _connectionInfo = connectionInfo;
@@ -23,6 +29,14 @@ public partial class WelcomeScreenViewModel : ViewModelBase
     public void GetUsernameAndSetMessage(IConnectionInfo connectionInfo)
     {
         Username = connectionInfo.Username;
-        WelcomeMessage = $"{Username}, Добро пожаловать в информационную систему деканата!";
+        UserRole = connectionInfo.UserRole; 
+        WelcomeMessage = $"{Username} ({UserRole}), Добро пожаловать в информационную систему деканата!";
     }
+
+    [RelayCommand]
+    public void OpenTerminal()
+    {
+        OnOpenTerminal?.Invoke();
+    }
+
 }

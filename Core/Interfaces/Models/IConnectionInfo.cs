@@ -9,7 +9,7 @@ public interface IConnectionInfo
     public string Username { get; set; }
     public string Password { get; set; }
     public string Database { get; set; }
-
+    public string UserRole { get; set; }
     public NpgsqlConnection? Connection { get; set; }
 
     public bool IsValid();
