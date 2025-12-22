@@ -27,6 +27,7 @@ using Models.Repositories;
 using Models.Data;
 using Microsoft.EntityFrameworkCore;
 using Models.Models.Tables;
+using GUI.ViewModels.RoleMenus.Admin;
 
 namespace GUI;
 
@@ -113,6 +114,7 @@ private static ServiceCollection ProvideServices()
 
     collection.AddSingleton<MenuViewModel>();
     collection.AddSingleton<DeanRoleViewModel>();
+    collection.AddSingleton<AdminRoleViewModel>();
 
     return collection;
 }

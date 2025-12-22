@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using GUI.ViewModels.Authentication;
+using GUI.ViewModels.RoleMenus.Admin;
 using GUI.ViewModels.RoleMenus.Dean;
 using GUI.ViewModels.Shared;
 using Interfaces.Models;
@@ -30,6 +31,9 @@ public partial class MainWindowViewModel : ViewModelBase
     DeanRoleViewModel _deanRoleViewModel;
 
     [ObservableProperty]
+    AdminRoleViewModel _adminRoleViewModel;
+
+    [ObservableProperty]
     private ViewModelBase _currentView;
 
     [ObservableProperty]
@@ -43,7 +47,8 @@ public partial class MainWindowViewModel : ViewModelBase
     TerminalWindowViewModel terminalWindowViewModel,
     WelcomeScreenViewModel welcomeScreenViewModel,
     MenuViewModel menuViewModel,
-    DeanRoleViewModel deanRoleViewModel
+    DeanRoleViewModel deanRoleViewModel,
+    AdminRoleViewModel adminRoleViewModel
     )
     {
         _connectionInfo = connectionInfo;
@@ -57,6 +62,7 @@ public partial class MainWindowViewModel : ViewModelBase
         MenuViewModel = menuViewModel;
 
         DeanRoleViewModel = deanRoleViewModel;
+        AdminRoleViewModel = adminRoleViewModel;
 
         CurrentView = AuthenticationViewModel;
         CurrentMenu = null;
@@ -84,6 +90,10 @@ public partial class MainWindowViewModel : ViewModelBase
         {
             case "dean":
                 ChangeMenuView(DeanRoleViewModel);
+                break;
+
+            case "admin":
+                ChangeMenuView(AdminRoleViewModel);
                 break;
 
             default:
@@ -131,5 +141,11 @@ public partial class MainWindowViewModel : ViewModelBase
 
     [RelayCommand]
     public void OpenClassroom() => ChangeView(TerminalWindowViewModel);
+
+    [RelayCommand]
+    public void OpenUsers() => ChangeView(TerminalWindowViewModel);
+
+    [RelayCommand]
+    public void OpenAudit() => ChangeView(TerminalWindowViewModel);
 
 }
