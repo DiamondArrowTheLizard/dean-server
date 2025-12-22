@@ -3,12 +3,12 @@ using Npgsql;
 
 namespace Models.Models;
 
-public class ConnectionInfo : IConnectionInfo
+public class ConnectionInfo(string host, string database) : IConnectionInfo
 {
-    public string Host { get; set; } = string.Empty;
+    public string Host { get; set; } = host;
     public string Username { get; set; } = string.Empty;
     public string Password { get; set; } = string.Empty;
-    public string Database { get; set; } = string.Empty;
+    public string Database { get; set; } = database;
 
     public NpgsqlConnection? Connection { get; set; }
 
@@ -19,4 +19,5 @@ public class ConnectionInfo : IConnectionInfo
                !string.IsNullOrWhiteSpace(Password) &&
                !string.IsNullOrWhiteSpace(Database);
     }
+
 }

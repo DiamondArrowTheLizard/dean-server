@@ -22,6 +22,7 @@ using Interfaces.Builders;
 using GUI.ViewModels.Shared;
 using Interfaces.Handlers.Shared;
 using Models.Handlers.Shared;
+using System.Transactions;
 
 namespace GUI;
 
@@ -69,7 +70,9 @@ public partial class App : Application
     {
         var collection = new ServiceCollection();
 
-        collection.AddSingleton<IConnectionInfo, ConnectionInfo>();
+        collection.AddSingleton<IConnectionInfo, ConnectionInfo>(
+           sp => new ConnectionInfo("localhost", "DeanServer")
+        );
         collection.AddSingleton<IDatabaseConnectionString, DatabaseConnectionString>();
         collection.AddSingleton<IConnectionStringBuilder, ConnectionStringBuilder>();
         collection.AddTransient<ITerminalQueryHandler, TerminalQueryHandler>();
@@ -78,6 +81,7 @@ public partial class App : Application
         collection.AddTransient<IChangePasswordHandler, ChangePasswordHandler>();
 
         collection.AddSingleton<MainWindowViewModel>();
+        collection.AddSingleton<WelcomeScreenViewModel>();
 
         collection.AddSingleton<AuthenticationViewModel>();
         collection.AddTransient<ChangePasswordViewModel>();

@@ -14,7 +14,6 @@ public class AuthenticationHandler(IDatabaseConnectionString databaseConnectionS
         if (connection == null)
             throw new ArgumentNullException(nameof(connection));
 
-        // Console.WriteLine($"AuthVM contents:\nHost: {connection.Host}\nLogin: {connection.Username}\nPassword: {connection.Password}\nDatabase: {connection.Database}");
 
         try
         {
@@ -28,7 +27,6 @@ public class AuthenticationHandler(IDatabaseConnectionString databaseConnectionS
                 return false;
             }
 
-            
             var builder = new ConnectionStringBuilder(connection);
             builder.Build();
             _databaseConnectionString.ConnectionString = builder.GetConnectionString();
@@ -76,6 +74,7 @@ public class AuthenticationHandler(IDatabaseConnectionString databaseConnectionS
         finally
         {
             Console.WriteLine("Закрываем подключение");
+            Console.WriteLine($"AuthVM contents:\nHost: {connection.Host}\nLogin: {connection.Username}\nPassword: {connection.Password}\nDatabase: {connection.Database}");
             connection.Connection?.Close();
         }
 

@@ -27,14 +27,14 @@ public partial class AuthenticationViewModel(
     public void HandleClick()
     {
         Console.WriteLine("Attempted Authentication");
-        _connection.Host = "localhost";
         _connection.Username = Login;
         _connection.Password = Password;
-        _connection.Database = "DeanServer";
 
-        _authenticationHandler.HandleAuthentication(_connection);
+        if(_authenticationHandler.HandleAuthentication(_connection))
+        {
+            OnButtonClicked?.Invoke(this);
+        }
 
-        OnButtonClicked?.Invoke(this);
     }
 
 }
