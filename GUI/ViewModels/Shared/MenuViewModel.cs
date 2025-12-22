@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.Serialization;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
@@ -10,26 +11,15 @@ public partial class MenuViewModel : ViewModelBase
     public event Action? OnTerminalOpen;
     public event Action? OnCityOpen;
     public event Action? OnStreetOpen;
-    public event Action? OnFacultyOpen;
-    public event Action? OnAcademicTitleOpen;
-    public event Action? OnAcademicDegreeOpen;
-    public event Action? OnDisciplineOpen;
-    public event Action? OnPositionOpen;
-    public event Action? OnClassroomOpen;
+    public event Action? OnSettingsOpen;
+    public event Action? OnAboutOpen;
 
-    public void SetupMenu(MainWindowViewModel view)
+    public virtual void SetupMenu(MainWindowViewModel view)
     {
-        ArgumentNullException.ThrowIfNull(view);
         OnMenuOpen += view.OpenMenu;
         OnTerminalOpen += view.OpenTerminal;
         OnCityOpen += view.OpenCity;
         OnStreetOpen += view.OpenStreet;
-        OnFacultyOpen += view.OpenFaculty;
-        OnAcademicTitleOpen += view.OpenAcademicTitle;
-        OnAcademicDegreeOpen += view.OpenAcademicDegree;
-        OnDisciplineOpen += view.OpenDiscipline;
-        OnPositionOpen += view.OpenPosition;
-        OnClassroomOpen += view.OpenClassroom;
     }
 
     [RelayCommand]
@@ -57,39 +47,14 @@ public partial class MenuViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    public void OpenFaculty()
+    public void OpenSettings()
     {
-        OnFacultyOpen?.Invoke();
+        OnSettingsOpen?.Invoke();
     }
 
     [RelayCommand]
-    public void OpenAcademicTitle()
+    public void OpenAbout()
     {
-        OnAcademicTitleOpen?.Invoke();
+        OnAboutOpen?.Invoke();
     }
-
-    [RelayCommand]
-    public void OpenAcademicDegree()
-    {
-        OnAcademicDegreeOpen?.Invoke();
-    }
-
-    [RelayCommand]
-    public void OpenDiscipline()
-    {
-        OnDisciplineOpen?.Invoke();
-    }
-
-    [RelayCommand]
-    public void OpenPosition()
-    {
-        OnPositionOpen?.Invoke();
-    }
-
-    [RelayCommand]
-    public void OpenClassroom()
-    {
-        OnClassroomOpen?.Invoke();
-    }
-
 }
