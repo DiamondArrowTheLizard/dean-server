@@ -6,7 +6,7 @@
         x:Class="GUI.Views.Shared.MenuView"
         x:DataType="vm:MenuViewModel">
 
-<StackPanel HorizontalAlignment="Center" Orientation="Vertical" Width="1000" Margin="20">
+<StackPanel HorizontalAlignment="Left">
         <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_Главное Меню" Command="{Binding OpenMenuCommand}" />
@@ -15,8 +15,15 @@
                 <MenuItem Header="Города" Command="{Binding OpenCityCommand}" />
                 <MenuItem Header="Улицы" Command="{Binding OpenStreetCommand}" />
             </MenuItem>
-            <MenuItem Header="_Настройки" Command="{Binding OpenSettingsCommand}" />
-            <MenuItem Header="_О программе" Command="{Binding OpenAboutCommand}" />
+            <MenuItem Header="_Справка">
+                <MenuItem Header="Руководство пользователя" Command="{Binding OpenManualCommand}" />
+                <MenuItem Header="О программе" Command="{Binding OpenAboutCommand}" />
+            </MenuItem>
+            <MenuItem Header="_Разное">
+                <MenuItem Header="Настройка" Command="{Binding OpenSettingsCommand}" />
+                <MenuItem Header="Сменить пароль" Command="{Binding OpenChangePasswordCommand}" />
+                <MenuItem Header="_Выйти" Command="{Binding OpenLogoutCommand}" />
+            </MenuItem>
         </Menu>
         </DockPanel>
 </StackPanel>

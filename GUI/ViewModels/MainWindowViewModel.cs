@@ -111,10 +111,16 @@ public partial class MainWindowViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    public void ChangePassword() => ChangeView(ChangePasswordViewModel);
+    public void OpenLogin() {
+        CurrentMenu = null;
+        _connectionInfo.Username = string.Empty;
+        _connectionInfo.Password = string.Empty;
+        _connectionInfo.UserRole = string.Empty;
+        ChangeView(AuthenticationViewModel);
+    } 
 
     [RelayCommand]
-    public void GoBackToLogin() => ChangeView(AuthenticationViewModel);
+    public void OpenChangePassword() => ChangeView(ChangePasswordViewModel);
 
     [RelayCommand]
     public void OpenMenu() => ChangeView(WelcomeScreenViewModel);
@@ -131,9 +137,6 @@ public partial class MainWindowViewModel : ViewModelBase
     public void OpenStreet() => ChangeView(TerminalWindowViewModel);
 
     [RelayCommand]
-    public void OpenFaculty() => ChangeView(TerminalWindowViewModel);
-
-    [RelayCommand]
     public void OpenDepartment() => ChangeView(TerminalWindowViewModel);
 
     [RelayCommand]
@@ -148,4 +151,9 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     public void OpenAudit() => ChangeView(TerminalWindowViewModel);
 
+    [RelayCommand]
+    public void OpenManual() => ChangeView(TerminalWindowViewModel);
+
+    [RelayCommand]
+    public void OpenSettings() => ChangeView(TerminalWindowViewModel);
 }

@@ -22,7 +22,7 @@
                         </Button>
                         <Button Margin="10 0"
                                 x:CompileBindings="False"
-                                Command="{Binding $parent[Window].DataContext.ChangePasswordCommand}">Сменить Пароль
+                                Command="{Binding $parent[Window].DataContext.OpenChangePasswordCommand}">Сменить Пароль
                         </Button>
             </StackPanel>
 </StackPanel>
