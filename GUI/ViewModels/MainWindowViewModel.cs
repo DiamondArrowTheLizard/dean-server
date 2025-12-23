@@ -4,6 +4,10 @@ using CommunityToolkit.Mvvm.Input;
 using GUI.ViewModels.Authentication;
 using GUI.ViewModels.RoleMenus.Admin;
 using GUI.ViewModels.RoleMenus.Dean;
+using GUI.ViewModels.RoleMenus.HeadOfDepartment;
+using GUI.ViewModels.RoleMenus.Methodist;
+using GUI.ViewModels.RoleMenus.ScientificSecretary;
+using GUI.ViewModels.RoleMenus.Teacher;
 using GUI.ViewModels.Shared;
 using Interfaces.Models;
 
@@ -34,6 +38,18 @@ public partial class MainWindowViewModel : ViewModelBase
     AdminRoleViewModel _adminRoleViewModel;
 
     [ObservableProperty]
+    private MethodistRoleViewModel _methodistRoleViewModel;
+
+    [ObservableProperty]
+    private HeadOfDepartmentRoleViewModel _headOfDepartmentRoleViewModel;
+
+    [ObservableProperty]
+    private ScientificSecretaryRoleViewModel _scientificSecretaryRoleViewModel;
+
+    [ObservableProperty]
+    private TeacherRoleViewModel _teacherRoleViewModel;
+
+    [ObservableProperty]
     private ViewModelBase _currentView;
 
     [ObservableProperty]
@@ -48,8 +64,11 @@ public partial class MainWindowViewModel : ViewModelBase
     WelcomeScreenViewModel welcomeScreenViewModel,
     MenuViewModel menuViewModel,
     DeanRoleViewModel deanRoleViewModel,
-    AdminRoleViewModel adminRoleViewModel
-    )
+    AdminRoleViewModel adminRoleViewModel,
+    MethodistRoleViewModel methodistRoleViewModel,
+    HeadOfDepartmentRoleViewModel headOfDepartmentRoleViewModel,
+    ScientificSecretaryRoleViewModel scientificSecretaryRoleViewModel,
+    TeacherRoleViewModel teacherRoleViewModel)
     {
         _connectionInfo = connectionInfo;
 
@@ -57,18 +76,22 @@ public partial class MainWindowViewModel : ViewModelBase
         ChangePasswordViewModel = changePasswordViewModel;
 
         TerminalWindowViewModel = terminalWindowViewModel;
-        
+
         WelcomeScreenViewModel = welcomeScreenViewModel;
         MenuViewModel = menuViewModel;
 
         DeanRoleViewModel = deanRoleViewModel;
         AdminRoleViewModel = adminRoleViewModel;
+        MethodistRoleViewModel = methodistRoleViewModel;
+        HeadOfDepartmentRoleViewModel = headOfDepartmentRoleViewModel;
+        ScientificSecretaryRoleViewModel = scientificSecretaryRoleViewModel;
+        TeacherRoleViewModel = teacherRoleViewModel;
 
         CurrentView = AuthenticationViewModel;
         CurrentMenu = null;
 
         AuthenticationViewModel.OnButtonClicked += OnAuthentication;
-        
+
     }
 
     public void ChangeView(ViewModelBase newView)
@@ -86,16 +109,26 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     public void OnAuthentication(AuthenticationViewModel authenticationViewModel)
     {
-        switch(_connectionInfo.UserRole)
+        switch (_connectionInfo.UserRole.ToLower())
         {
             case "dean":
                 ChangeMenuView(DeanRoleViewModel);
                 break;
-
             case "admin":
                 ChangeMenuView(AdminRoleViewModel);
                 break;
-
+            case "methodist":
+                ChangeMenuView(MethodistRoleViewModel);
+                break;
+            case "head_of_department":
+                ChangeMenuView(HeadOfDepartmentRoleViewModel);
+                break;
+            case "scientific_secretary":
+                ChangeMenuView(ScientificSecretaryRoleViewModel);
+                break;
+            case "teacher":
+                ChangeMenuView(TeacherRoleViewModel);
+                break;
             default:
                 ChangeMenuView(MenuViewModel);
                 break;
@@ -111,13 +144,14 @@ public partial class MainWindowViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    public void OpenLogin() {
+    public void OpenLogin()
+    {
         CurrentMenu = null;
         _connectionInfo.Username = string.Empty;
         _connectionInfo.Password = string.Empty;
         _connectionInfo.UserRole = string.Empty;
         ChangeView(AuthenticationViewModel);
-    } 
+    }
 
     [RelayCommand]
     public void OpenChangePassword() => ChangeView(ChangePasswordViewModel);
@@ -128,7 +162,7 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     public void OpenTerminal() => ChangeView(TerminalWindowViewModel);
 
-    // TODO
+    // TODO 
 
     [RelayCommand]
     public void OpenCity() => ChangeView(TerminalWindowViewModel);
@@ -156,4 +190,40 @@ public partial class MainWindowViewModel : ViewModelBase
 
     [RelayCommand]
     public void OpenSettings() => ChangeView(TerminalWindowViewModel);
+
+    [RelayCommand]
+    public void OpenStudyGroup() => ChangeView(TerminalWindowViewModel);
+
+    [RelayCommand]
+    public void OpenStudent() => ChangeView(TerminalWindowViewModel);
+
+    [RelayCommand]
+    public void OpenFacultyOrder() => ChangeView(TerminalWindowViewModel);
+
+    [RelayCommand]
+    public void OpenTeacher() => ChangeView(TerminalWindowViewModel);
+
+    [RelayCommand]
+    public void OpenTeacherIndividualPlan() => ChangeView(TerminalWindowViewModel);
+
+    [RelayCommand]
+    public void OpenPerformance() => ChangeView(TerminalWindowViewModel);
+
+    [RelayCommand]
+    public void OpenSchedule() => ChangeView(TerminalWindowViewModel);
+
+    [RelayCommand]
+    public void OpenCurriculum() => ChangeView(TerminalWindowViewModel);
+
+    [RelayCommand]
+    public void OpenQualificationWork() => ChangeView(TerminalWindowViewModel);
+
+    [RelayCommand]
+    public void OpenStudyGroupTeacherIndividualPlan() => ChangeView(TerminalWindowViewModel);
+
+    [RelayCommand]
+    public void OpenTeacherIndividualPlanKnowledgeCheckType() => ChangeView(TerminalWindowViewModel);
+
+    [RelayCommand]
+    public void OpenTeacherIndividualPlanDiscipline() => ChangeView(TerminalWindowViewModel);
 }

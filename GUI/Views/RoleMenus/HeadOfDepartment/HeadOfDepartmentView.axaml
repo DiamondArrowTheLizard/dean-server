@@ -1,0 +1,43 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:GUI.ViewModels.RoleMenus.HeadOfDepartment"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        x:Class="GUI.Views.RoleMenus.HeadOfDepartment.HeadOfDepartmentRoleView"
+        x:DataType="vm:HeadOfDepartmentRoleViewModel">
+
+<StackPanel HorizontalAlignment="Left">
+        <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="_Главное Меню (Деканат)" Command="{Binding OpenMenuCommand}" />
+            <MenuItem Header="_Терминал" Command="{Binding OpenTerminalCommand}"/>
+            <MenuItem Header="_Справочники">
+                <MenuItem Header="Города" Command="{Binding OpenCityCommand}" />
+                <MenuItem Header="Улицы" Command="{Binding OpenStreetCommand}" />
+                <MenuItem Header="Кафедры" Command="{Binding OpenDepartmentCommand}" />
+                <MenuItem Header="Преподаватели" Command="{Binding OpenTeacherCommand}" />
+                <MenuItem Header="Дисциплины" Command="{Binding OpenDisciplineCommand}" />
+            </MenuItem>
+            <MenuItem Header="_Документы">
+                <MenuItem Header="Индивидуальные планы преподавателей" Command="{Binding OpenTeacherIndividualPlanCommand}" />
+                <MenuItem Header="Учебные группы" Command="{Binding OpenStudyGroupCommand}" />
+                <MenuItem Header="Студенты" Command="{Binding OpenStudentCommand}" />
+                <MenuItem Header="Успеваемость" Command="{Binding OpenPerformanceCommand}" />
+                <MenuItem Header="Расписание" Command="{Binding OpenScheduleCommand}" />
+                <MenuItem Header="Учебные планы" Command="{Binding OpenCurriculumCommand}" />
+                <MenuItem Header="Квалификационные работы" Command="{Binding OpenQualificationWorkCommand}" />
+            </MenuItem>
+            <MenuItem Header="_Справка">
+                <MenuItem Header="Руководство пользователя" Command="{Binding OpenManualCommand}" />
+                <MenuItem Header="О программе" Command="{Binding OpenAboutCommand}" />
+            </MenuItem>
+            <MenuItem Header="_Разное">
+                <MenuItem Header="Настройка" Command="{Binding OpenSettingsCommand}" />
+                <MenuItem Header="Сменить пароль" Command="{Binding OpenChangePasswordCommand}" />
+                <MenuItem Header="_Выйти" Command="{Binding OpenLogoutCommand}" />
+            </MenuItem>
+        </Menu>
+        </DockPanel>
+</StackPanel>
+
+</UserControl>

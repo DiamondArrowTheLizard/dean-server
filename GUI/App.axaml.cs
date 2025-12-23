@@ -28,6 +28,10 @@ using Models.Data;
 using Microsoft.EntityFrameworkCore;
 using Models.Models.Tables;
 using GUI.ViewModels.RoleMenus.Admin;
+using GUI.ViewModels.RoleMenus.Methodist;
+using GUI.ViewModels.RoleMenus.ScientificSecretary;
+using GUI.ViewModels.RoleMenus.HeadOfDepartment;
+using GUI.ViewModels.RoleMenus.Teacher;
 
 namespace GUI;
 
@@ -115,6 +119,10 @@ private static ServiceCollection ProvideServices()
     collection.AddSingleton<MenuViewModel>();
     collection.AddSingleton<DeanRoleViewModel>();
     collection.AddSingleton<AdminRoleViewModel>();
+    collection.AddSingleton<MethodistRoleViewModel>();
+    collection.AddSingleton<ScientificSecretaryRoleViewModel>();
+    collection.AddSingleton<HeadOfDepartmentRoleViewModel>();
+    collection.AddSingleton<TeacherRoleViewModel>();
 
     return collection;
 }
