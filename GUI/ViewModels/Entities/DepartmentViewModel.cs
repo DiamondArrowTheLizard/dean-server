@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 using Core.Interfaces.Services;
 using GUI.ViewModels.Entities.Base;
 using Models.Models.Tables;
@@ -72,7 +73,6 @@ public partial class DepartmentViewModel(IQueryService queryService) : BaseCrudV
         var newId = await _queryService.ExecuteScalarAsync<int>(query, parameters);
         item.Id = newId;
 
-
         var faculty = Faculties.FirstOrDefault(f => f.Id == item.IdFaculty);
         if (faculty != null)
         {
@@ -91,7 +91,6 @@ public partial class DepartmentViewModel(IQueryService queryService) : BaseCrudV
         };
 
         await _queryService.ExecuteNonQueryAsync(query, parameters);
-
 
         var faculty = Faculties.FirstOrDefault(f => f.Id == item.IdFaculty);
         if (faculty != null)
@@ -118,7 +117,6 @@ public partial class DepartmentViewModel(IQueryService queryService) : BaseCrudV
 
     protected override DepartmentDisplay CreateNewItem()
     {
-
         if (!Faculties.Any())
         {
             _ = LoadFacultiesAsync();
@@ -142,6 +140,61 @@ public partial class DepartmentViewModel(IQueryService queryService) : BaseCrudV
         return Items.Where(d =>
             (d.DepartmentName != null && d.DepartmentName.ToLowerInvariant().Contains(searchLower)) ||
             (d.FacultyName != null && d.FacultyName.ToLowerInvariant().Contains(searchLower)));
+    }
+
+    protected override Task<string> ExportDataAsync()
+    {
+        var itemsToExport = FilteredItems.Any() ? FilteredItems : Items;
+        
+        var csv = new StringBuilder();
+        
+        csv.AppendLine("Id,DepartmentName,IdFaculty,FacultyName");
+        
+        foreach (var item in itemsToExport)
+        {
+            var escapedDepartmentName = EscapeCsvField(item.DepartmentName ?? "");
+            var escapedFacultyName = EscapeCsvField(item.FacultyName ?? "");
+            
+            csv.AppendLine($"{item.Id},{escapedDepartmentName},{item.IdFaculty},{escapedFacultyName}");
+        }
+        
+        return Task.FromResult(csv.ToString());
+    }
+
+    protected override async Task SaveExportFileAsync(string data)
+    {
+        var currentDirectory = Directory.GetCurrentDirectory();
+        var solutionRoot = FindSolutionRoot(currentDirectory);
+        
+        var folderPath = Path.Combine(solutionRoot, "SavedTables");
+        Directory.CreateDirectory(folderPath);
+        
+        var fileName = $"Departments_{DateTime.Now:yyyyMMdd_HHmmss}.csv";
+        var filePath = Path.Combine(folderPath, fileName);
+        
+        await File.WriteAllTextAsync(filePath, data, Encoding.UTF8);
+    }
+
+    private static string FindSolutionRoot(string currentDirectory)
+    {
+        var directory = new DirectoryInfo(currentDirectory);
+        
+        while (directory != null && !directory.GetFiles("*.sln").Any())
+        {
+            directory = directory.Parent;
+        }
+        
+        return directory?.FullName ?? currentDirectory;
+    }
+
+    private static string EscapeCsvField(string field)
+    {
+        if (field.Contains(',') || field.Contains('"') || field.Contains('\n') || field.Contains('\r'))
+        {
+            field = field.Replace("\"", "\"\"");
+            return $"\"{field}\"";
+        }
+        return field;
     }
 }
 
