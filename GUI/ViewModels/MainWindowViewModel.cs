@@ -76,7 +76,8 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]
     private CurriculumViewModel _curriculumViewModel;
 
-
+    [ObservableProperty]
+    private StudyGroupViewModel _studyGroupViewModel;
 
 
 
@@ -103,7 +104,8 @@ public partial class MainWindowViewModel : ViewModelBase
         ScheduleViewModel scheduleViewModel,
         PerformanceViewModel performanceViewModel,
         QualificationWorkViewModel qualificationWorkViewModel,
-        CurriculumViewModel curriculumViewModel)
+        CurriculumViewModel curriculumViewModel,
+        StudyGroupViewModel studyGroupViewModel)  
     {
         _connectionInfo = connectionInfo;
 
@@ -132,6 +134,7 @@ public partial class MainWindowViewModel : ViewModelBase
         PerformanceViewModel = performanceViewModel;
         QualificationWorkViewModel = qualificationWorkViewModel;
         CurriculumViewModel = curriculumViewModel;
+        StudyGroupViewModel = studyGroupViewModel;
 
         AuthenticationViewModel.OnButtonClicked += OnAuthentication;
 
@@ -233,7 +236,7 @@ public partial class MainWindowViewModel : ViewModelBase
     public void OpenSettings() => ChangeView(TerminalWindowViewModel);
 
     [RelayCommand]
-    public void OpenStudyGroup() => ChangeView(TerminalWindowViewModel);
+    public void OpenStudyGroup() => ChangeView(StudyGroupViewModel);
 
     [RelayCommand]
     public void OpenStudent() => ChangeView(StudentViewModel);

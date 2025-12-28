@@ -79,7 +79,14 @@ ORDER BY s.id;",
 
             ["GetAllCities"] = @"SELECT id, city_name AS CityName FROM City ORDER BY city_name;",
             ["GetAllStreets"] = @"SELECT id, street_name AS StreetName FROM Street ORDER BY street_name;",
-            ["GetAllStudyGroups"] = @"SELECT sg.id, sg.group_number AS GroupNumber FROM StudyGroup sg ORDER BY sg.group_number;",
+            ["GetAllStudyGroups"] = @"SELECT 
+    sg.id,
+    sg.group_number AS GroupNumber,
+    sg.id_course AS IdCourse,
+    c.course_name AS CourseName
+FROM StudyGroup sg
+LEFT JOIN Course c ON sg.id_course = c.id
+ORDER BY sg.id;",
 
             ["InsertStudent"] = @"INSERT INTO Student (
     last_name, first_name, middle_name, gender, birth_date, has_children,
@@ -291,6 +298,24 @@ WHERE id = @id;",
 
             ["DeleteCurriculumWithDependencies"] = @"DELETE FROM Curriculum_Performance WHERE id_curriculum = @id;
 DELETE FROM Curriculum WHERE id = @id;",
+            ["InsertStudyGroup"] = @"INSERT INTO StudyGroup (
+    group_number, id_course
+) VALUES (
+    @groupNumber, @idCourse
+) RETURNING id;",
+
+            ["UpdateStudyGroup"] = @"UPDATE StudyGroup SET 
+    group_number = @groupNumber,
+    id_course = @idCourse
+WHERE id = @id;",
+
+            ["DeleteStudyGroup"] = @"DELETE FROM StudyGroup WHERE id = @id;",
+
+            ["DeleteStudyGroupWithDependencies"] = @"DELETE FROM Schedule WHERE id_studygroup = @id;
+DELETE FROM Student WHERE id_studygroup = @id;
+DELETE FROM StudyGroup_TeacherIndividualPlan WHERE id_studygroup = @id;
+DELETE FROM Curriculum WHERE id_studygroup = @id;
+DELETE FROM StudyGroup WHERE id = @id;",
         };
 
         return queries.ContainsKey(queryName) ? queries[queryName] : string.Empty;
