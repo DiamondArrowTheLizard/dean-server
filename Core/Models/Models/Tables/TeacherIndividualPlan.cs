@@ -2,6 +2,7 @@ namespace Models.Models.Tables;
 
 public class TeacherIndividualPlan(int id) : TableBase(id)
 {
+    public TeacherIndividualPlan() : this(0) { }
     public int TotalHours { get; set; }
     public int LectureHours { get; set; }
     public int PracticeHours { get; set; }

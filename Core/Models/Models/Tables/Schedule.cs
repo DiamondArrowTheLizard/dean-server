@@ -2,6 +2,7 @@ namespace Models.Models.Tables;
 
 public class Schedule(int id) : TableBase(id)
 {
+    public Schedule() : this(0) { }
     public int StudyWeeks { get; set; }
     public string DayOfWeekEnum { get; set; } = string.Empty;
     public TimeSpan StartTime { get; set; }
