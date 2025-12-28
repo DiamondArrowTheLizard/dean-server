@@ -43,6 +43,7 @@ public class QueryService(IDatabaseConnectionString connectionString) : IQuerySe
                 WHERE id = @id;",
 
             ["DeleteClassroom"] = @"DELETE FROM Classroom WHERE id = @id;",
+            
             ["GetAllStudents"] = @"SELECT 
     s.id,
     s.last_name AS LastName,
@@ -112,6 +113,27 @@ ORDER BY s.id;",
 WHERE id = @id;",
 
             ["DeleteStudent"] = @"DELETE FROM Student WHERE id = @id;",
+
+            ["DeleteStudentWithDependencies"] = @"DELETE FROM Curriculum_Performance WHERE id_performance IN (SELECT id FROM Performance WHERE id_student = @id);
+DELETE FROM Performance_KnowledgeCheckType WHERE id_performance IN (SELECT id FROM Performance WHERE id_student = @id);
+DELETE FROM Performance_Discipline WHERE id_performance IN (SELECT id FROM Performance WHERE id_student = @id);
+DELETE FROM Payment WHERE id_contract IN (SELECT id FROM Contract WHERE id_student = @id);
+DELETE FROM Contract WHERE id_student = @id;
+DELETE FROM Student_QualificationWork WHERE id_student = @id;
+DELETE FROM Student_Parent WHERE id_student = @id;
+DELETE FROM Student_FacultyOrder WHERE id_student = @id;
+DELETE FROM Performance WHERE id_student = @id;
+DELETE FROM Student WHERE id = @id;",
+
+            ["DeleteStudentQualifications"] = @"DELETE FROM Student_QualificationWork WHERE id_student = @id;",
+            ["DeleteStudentPerformance"] = @"DELETE FROM Performance WHERE id_student = @id;",
+            ["DeleteStudentContracts"] = @"DELETE FROM Contract WHERE id_student = @id;",
+            ["DeleteStudentPayments"] = @"DELETE FROM Payment WHERE id_contract IN (SELECT id FROM Contract WHERE id_student = @id);",
+            ["DeleteStudentParents"] = @"DELETE FROM Student_Parent WHERE id_student = @id;",
+            ["DeleteStudentFacultyOrders"] = @"DELETE FROM Student_FacultyOrder WHERE id_student = @id;",
+            ["DeletePerformanceRelated"] = @"DELETE FROM Curriculum_Performance WHERE id_performance IN (SELECT id FROM Performance WHERE id_student = @id);
+DELETE FROM Performance_KnowledgeCheckType WHERE id_performance IN (SELECT id FROM Performance WHERE id_student = @id);
+DELETE FROM Performance_Discipline WHERE id_performance IN (SELECT id FROM Performance WHERE id_student = @id);"
         };
 
         return queries.ContainsKey(queryName) ? queries[queryName] : string.Empty;
@@ -136,7 +158,15 @@ WHERE id = @id;",
             ["GetAllStudyGroups"] = "Получить все группы",
             ["InsertStudent"] = "Добавить студента",
             ["UpdateStudent"] = "Обновить студента",
-            ["DeleteStudent"] = "Удалить студента"
+            ["DeleteStudent"] = "Удалить студента",
+            ["DeleteStudentWithDependencies"] = "Удалить студента со всеми зависимостями",
+            ["DeleteStudentQualifications"] = "Удалить квалификационные работы студента",
+            ["DeleteStudentPerformance"] = "Удалить успеваемость студента",
+            ["DeleteStudentContracts"] = "Удалить договоры студента",
+            ["DeleteStudentPayments"] = "Удалить платежи студента",
+            ["DeleteStudentParents"] = "Удалить связи с родителями студента",
+            ["DeleteStudentFacultyOrders"] = "Удалить приказы студента",
+            ["DeletePerformanceRelated"] = "Удалить связанные записи успеваемости"
         };
     }
 

@@ -170,7 +170,7 @@ public partial class StudentViewModel(IQueryService queryService) : BaseCrudView
 
     protected override async Task DeleteItemAsync(StudentDisplay item)
     {
-        var query = _queryService.GetQuery("DeleteStudent");
+        var query = _queryService.GetQuery("DeleteStudentWithDependencies");
         var parameters = new Dictionary<string, object>
         {
             ["id"] = item.Id
