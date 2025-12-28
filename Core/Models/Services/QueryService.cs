@@ -247,6 +247,50 @@ WHERE id = @id;",
 
             ["DeleteQualificationWorkWithDependencies"] = @"DELETE FROM Student_QualificationWork WHERE id_qualificationwork = @id;
 DELETE FROM QualificationWork WHERE id = @id;",
+            ["GetAllCurriculums"] = @"SELECT 
+    c.id,
+    c.total_hours AS TotalHours,
+    c.lecture_hours AS LectureHours,
+    c.practice_hours AS PracticeHours,
+    c.lab_hours AS LabHours,
+    c.id_discipline AS IdDiscipline,
+    c.id_course AS IdCourse,
+    c.id_studygroup AS IdStudyGroup,
+    c.id_knowledgechecktype AS IdKnowledgeCheckType,
+    d.discipline_name AS DisciplineName,
+    cr.course_name AS CourseName,
+    sg.group_number AS GroupNumber,
+    kct.knowledge_check_type AS KnowledgeCheckTypeEnum
+FROM Curriculum c
+LEFT JOIN Discipline d ON c.id_discipline = d.id
+LEFT JOIN Course cr ON c.id_course = cr.id
+LEFT JOIN StudyGroup sg ON c.id_studygroup = sg.id
+LEFT JOIN KnowledgeCheckType kct ON c.id_knowledgechecktype = kct.id
+ORDER BY c.id;",
+
+            ["GetAllCourses"] = @"SELECT id, course_name AS CourseName FROM Course ORDER BY course_name;",
+
+            ["InsertCurriculum"] = @"INSERT INTO Curriculum (
+    total_hours, lecture_hours, practice_hours, lab_hours, id_discipline, id_course, id_studygroup, id_knowledgechecktype
+) VALUES (
+    @totalHours, @lectureHours, @practiceHours, @labHours, @idDiscipline, @idCourse, @idStudyGroup, @idKnowledgeCheckType
+) RETURNING id;",
+
+            ["UpdateCurriculum"] = @"UPDATE Curriculum SET 
+    total_hours = @totalHours,
+    lecture_hours = @lectureHours,
+    practice_hours = @practiceHours,
+    lab_hours = @labHours,
+    id_discipline = @idDiscipline,
+    id_course = @idCourse,
+    id_studygroup = @idStudyGroup,
+    id_knowledgechecktype = @idKnowledgeCheckType
+WHERE id = @id;",
+
+            ["DeleteCurriculum"] = @"DELETE FROM Curriculum WHERE id = @id;",
+
+            ["DeleteCurriculumWithDependencies"] = @"DELETE FROM Curriculum_Performance WHERE id_curriculum = @id;
+DELETE FROM Curriculum WHERE id = @id;",
         };
 
         return queries.ContainsKey(queryName) ? queries[queryName] : string.Empty;
