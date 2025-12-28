@@ -269,9 +269,18 @@ WHERE id = @id;",
             throw new InvalidOperationException($"Не удалось найти свойства Year, Month, Day в типе {dateOnlyType}");
         }
 
-        var year = (int)yearProperty.GetValue(dateOnlyValue);
-        var month = (int)monthProperty.GetValue(dateOnlyValue);
-        var day = (int)dayProperty.GetValue(dateOnlyValue);
+        
+        var year = yearProperty.GetValue(dateOnlyValue) is int yearValue 
+            ? yearValue 
+            : throw new InvalidOperationException("Year property returned null");
+        
+        var month = monthProperty.GetValue(dateOnlyValue) is int monthValue 
+            ? monthValue 
+            : throw new InvalidOperationException("Month property returned null");
+            
+        var day = dayProperty.GetValue(dateOnlyValue) is int dayValue 
+            ? dayValue 
+            : throw new InvalidOperationException("Day property returned null");
 
         return new DateTime(year, month, day);
     }
@@ -301,7 +310,9 @@ WHERE id = @id;",
                     }
                     else if (parameterValue is Enum)
                     {
-                        command.Parameters.AddWithValue(param.Key, parameterValue.ToString().ToLower());
+                        
+                        var stringValue = parameterValue.ToString();
+                        command.Parameters.AddWithValue(param.Key, stringValue?.ToLower() ?? string.Empty);
                     }
                     else
                     {
@@ -380,7 +391,9 @@ WHERE id = @id;",
                     }
                     else if (parameterValue is Enum)
                     {
-                        command.Parameters.AddWithValue(param.Key, parameterValue.ToString().ToLower());
+                        
+                        var stringValue = parameterValue.ToString();
+                        command.Parameters.AddWithValue(param.Key, stringValue?.ToLower() ?? string.Empty);
                     }
                     else
                     {
