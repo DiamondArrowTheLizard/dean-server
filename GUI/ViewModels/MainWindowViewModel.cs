@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using GUI.ViewModels.Authentication;
@@ -59,6 +59,9 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]
     private DepartmentViewModel _departmentViewModel;
 
+    [ObservableProperty]
+    private ClassroomViewModel _classroomViewModel;
+
     public MainWindowViewModel(
     IConnectionInfo connectionInfo,
     AuthenticationViewModel authenticationViewModel,
@@ -72,6 +75,7 @@ public partial class MainWindowViewModel : ViewModelBase
     HeadOfDepartmentRoleViewModel headOfDepartmentRoleViewModel,
     ScientificSecretaryRoleViewModel scientificSecretaryRoleViewModel,
     DepartmentViewModel departmentViewModel,
+    ClassroomViewModel classroomViewModel,
     TeacherRoleViewModel teacherRoleViewModel)
     {
         _connectionInfo = connectionInfo;
@@ -95,6 +99,7 @@ public partial class MainWindowViewModel : ViewModelBase
         CurrentMenu = null;
 
         DepartmentViewModel = departmentViewModel;
+        ClassroomViewModel = classroomViewModel;
 
         AuthenticationViewModel.OnButtonClicked += OnAuthentication;
 
@@ -168,8 +173,6 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     public void OpenTerminal() => ChangeView(TerminalWindowViewModel);
 
-    // TODO 
-
     [RelayCommand]
     public void OpenCity() => ChangeView(TerminalWindowViewModel);
 
@@ -183,7 +186,7 @@ public partial class MainWindowViewModel : ViewModelBase
     public void OpenDiscipline() => ChangeView(TerminalWindowViewModel);
 
     [RelayCommand]
-    public void OpenClassroom() => ChangeView(TerminalWindowViewModel);
+    public void OpenClassroom() => ChangeView(ClassroomViewModel);
 
     [RelayCommand]
     public void OpenUsers() => ChangeView(TerminalWindowViewModel);

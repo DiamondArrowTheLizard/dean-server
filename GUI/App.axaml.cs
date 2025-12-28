@@ -99,6 +99,7 @@ public partial class App : Application
         collection.AddTransient<TeacherRoleViewModel>();
 
         collection.AddTransient<DepartmentViewModel>();
+        collection.AddTransient<ClassroomViewModel>();
 
         return collection;
     }

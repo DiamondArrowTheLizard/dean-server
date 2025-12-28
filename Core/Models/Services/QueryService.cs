@@ -32,7 +32,18 @@ public class QueryService(IDatabaseConnectionString connectionString) : IQuerySe
                 SET department_name = @departmentName, id_faculty = @idFaculty 
                 WHERE id = @id;",
 
-            ["DeleteDepartment"] = @"DELETE FROM Department WHERE id = @id;"
+            ["DeleteDepartment"] = @"DELETE FROM Department WHERE id = @id;",
+
+            ["GetAllClassrooms"] = @"SELECT id, classroom_name AS ClassroomName FROM Classroom ORDER BY id;",
+
+            ["InsertClassroom"] = @"INSERT INTO Classroom (classroom_name) 
+                VALUES (@classroomName) RETURNING id;",
+
+            ["UpdateClassroom"] = @"UPDATE Classroom 
+                SET classroom_name = @classroomName 
+                WHERE id = @id;",
+
+            ["DeleteClassroom"] = @"DELETE FROM Classroom WHERE id = @id;"
         };
 
         return queries.ContainsKey(queryName) ? queries[queryName] : string.Empty;
@@ -46,7 +57,11 @@ public class QueryService(IDatabaseConnectionString connectionString) : IQuerySe
             ["GetAllFaculties"] = "Получить все факультеты",
             ["InsertDepartment"] = "Добавить кафедру",
             ["UpdateDepartment"] = "Обновить кафедру",
-            ["DeleteDepartment"] = "Удалить кафедру"
+            ["DeleteDepartment"] = "Удалить кафедру",
+            ["GetAllClassrooms"] = "Получить все аудитории",
+            ["InsertClassroom"] = "Добавить аудиторию",
+            ["UpdateClassroom"] = "Обновить аудиторию",
+            ["DeleteClassroom"] = "Удалить аудиторию"
         };
     }
 
