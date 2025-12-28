@@ -185,6 +185,7 @@ public abstract partial class BaseCrudViewModel<T>(IQueryService queryService) :
     [RelayCommand]
     public virtual async Task SearchAsync()
     {
+        await Task.Delay(0);
         if (string.IsNullOrWhiteSpace(SearchText))
         {
             
@@ -221,7 +222,7 @@ public abstract partial class BaseCrudViewModel<T>(IQueryService queryService) :
     protected abstract Task UpdateItemAsync(T item);
     protected abstract Task DeleteItemAsync(T item);
     
-    protected virtual T CreateNewItem() => new T();
+    protected virtual T CreateNewItem() => new();
     protected virtual bool IsNewItem(T item) => true;
     protected virtual Task<bool> ConfirmDeleteAsync() => Task.FromResult(true);
     
