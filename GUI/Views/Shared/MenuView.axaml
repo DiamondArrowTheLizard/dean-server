@@ -11,6 +11,7 @@
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_Главное Меню" Command="{Binding OpenMenuCommand}" />
             <MenuItem Header="_Терминал" Command="{Binding OpenTerminalCommand}"/>
+            <MenuItem Header="_Аналитика" Command="{Binding OpenChartsCommand}"/>
             <MenuItem Header="_Справочники">
                 <MenuItem Header="Города" Command="{Binding OpenCityCommand}" />
                 <MenuItem Header="Улицы" Command="{Binding OpenStreetCommand}" />

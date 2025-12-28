@@ -25,6 +25,7 @@ using GUI.ViewModels.RoleMenus.Teacher;
 using GUI.ViewModels.Entities;
 using Models.Services;
 using Interfaces.Services;
+using GUI.ViewModels.Charts;
 
 namespace GUI;
 
@@ -82,6 +83,12 @@ public partial class App : Application
         collection.AddTransient<IAuthenticationHandler, AuthenticationHandler>();
         collection.AddTransient<IChangePasswordHandler, ChangePasswordHandler>();
         collection.AddSingleton<IQueryService, QueryService>();
+        collection.AddSingleton<IChartService>(sp =>
+        {
+            string chartsConnectionString = "Host=localhost;Port=5432;Database=DeanServer;Username=chart_viewer;Password=StrongPassword123!;SSL Mode=Prefer";
+            return new ChartService(chartsConnectionString);
+        });
+        collection.AddSingleton<ChartsViewModel>();
 
         collection.AddSingleton<MainWindowViewModel>();
         collection.AddSingleton<AuthenticationViewModel>();

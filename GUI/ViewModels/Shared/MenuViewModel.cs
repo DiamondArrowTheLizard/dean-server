@@ -16,6 +16,7 @@ public partial class MenuViewModel : ViewModelBase
     public event Action? OnManualOpen;
     public event Action? OnSettingsOpen;
     public event Action? OnChangePasswordOpen;
+    public event Action? OnChartsOpen;
 
     public virtual void SetupMenu(MainWindowViewModel view)
     {
@@ -27,6 +28,7 @@ public partial class MenuViewModel : ViewModelBase
         OnManualOpen += view.OpenManual;
         OnSettingsOpen += view.OpenSettings;
         OnChangePasswordOpen += view.OpenChangePassword;
+        OnChartsOpen += view.OpenCharts;
     }
 
     [RelayCommand]
@@ -81,6 +83,12 @@ public partial class MenuViewModel : ViewModelBase
     public void OpenChangePassword()
     {
         OnChangePasswordOpen?.Invoke();
+    }
+
+    [RelayCommand]
+    public void OpenCharts()
+    {
+        OnChartsOpen?.Invoke();
     }
 
 }

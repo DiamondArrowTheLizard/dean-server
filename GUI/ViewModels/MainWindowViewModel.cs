@@ -1,6 +1,7 @@
 ﻿﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using GUI.ViewModels.Authentication;
+using GUI.ViewModels.Charts;
 using GUI.ViewModels.Entities;
 using GUI.ViewModels.RoleMenus.Admin;
 using GUI.ViewModels.RoleMenus.Dean;
@@ -88,7 +89,8 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]
     private StreetViewModel _streetViewModel;
 
-
+    [ObservableProperty]
+    private ChartsViewModel _chartsViewModel;
 
     public MainWindowViewModel(
         IConnectionInfo connectionInfo,
@@ -113,7 +115,8 @@ public partial class MainWindowViewModel : ViewModelBase
         StudyGroupViewModel studyGroupViewModel,
         TeacherIndividualPlanViewModel teacherIndividualPlanViewModel,
         CityViewModel cityViewModel,
-        StreetViewModel streetViewModel)  
+        StreetViewModel streetViewModel,
+        ChartsViewModel chartsViewModel)  
     {
         _connectionInfo = connectionInfo;
 
@@ -146,6 +149,8 @@ public partial class MainWindowViewModel : ViewModelBase
         TeacherIndividualPlanViewModel = teacherIndividualPlanViewModel;
         CityViewModel = cityViewModel;
         StreetViewModel = streetViewModel;
+
+        ChartsViewModel = chartsViewModel;
 
         AuthenticationViewModel.OnButtonClicked += OnAuthentication;
 
@@ -281,5 +286,8 @@ public partial class MainWindowViewModel : ViewModelBase
 
     [RelayCommand]
     public void OpenTeacherIndividualPlanDiscipline() => ChangeView(TerminalWindowViewModel);
+
+    [RelayCommand]
+    public void OpenCharts() => ChangeView(ChartsViewModel);
 
 }

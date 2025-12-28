@@ -21,5 +21,10 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
-
+<ItemGroup>
+    <Content Include="..\Python\**">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        <Link>Python\%(RecursiveDir)%(FileName)%(Extension)</Link>
+    </Content>
+</ItemGroup>
 </Project>
