@@ -1,8 +1,9 @@
-﻿﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿﻿﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using GUI.ViewModels.Authentication;
 using GUI.ViewModels.Charts;
 using GUI.ViewModels.Entities;
+using GUI.ViewModels.Help;
 using GUI.ViewModels.RoleMenus.Admin;
 using GUI.ViewModels.RoleMenus.Dean;
 using GUI.ViewModels.RoleMenus.HeadOfDepartment;
@@ -92,6 +93,9 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]
     private ChartsViewModel _chartsViewModel;
 
+    [ObservableProperty]
+    private ManualViewModel _manualViewModel;
+
     public MainWindowViewModel(
         IConnectionInfo connectionInfo,
         AuthenticationViewModel authenticationViewModel,
@@ -116,7 +120,8 @@ public partial class MainWindowViewModel : ViewModelBase
         TeacherIndividualPlanViewModel teacherIndividualPlanViewModel,
         CityViewModel cityViewModel,
         StreetViewModel streetViewModel,
-        ChartsViewModel chartsViewModel)  
+        ChartsViewModel chartsViewModel,
+        ManualViewModel manualViewModel)  
     {
         _connectionInfo = connectionInfo;
 
@@ -151,9 +156,9 @@ public partial class MainWindowViewModel : ViewModelBase
         StreetViewModel = streetViewModel;
 
         ChartsViewModel = chartsViewModel;
+        ManualViewModel = manualViewModel;
 
         AuthenticationViewModel.OnButtonClicked += OnAuthentication;
-
     }
 
     public void ChangeView(ViewModelBase newView)
@@ -246,7 +251,7 @@ public partial class MainWindowViewModel : ViewModelBase
     public void OpenAudit() => ChangeView(TerminalWindowViewModel);
 
     [RelayCommand]
-    public void OpenManual() => ChangeView(TerminalWindowViewModel);
+    public void OpenManual() => ChangeView(ManualViewModel);
 
     [RelayCommand]
     public void OpenSettings() => ChangeView(TerminalWindowViewModel);

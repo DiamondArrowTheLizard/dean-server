@@ -26,6 +26,7 @@ using GUI.ViewModels.Entities;
 using Models.Services;
 using Interfaces.Services;
 using GUI.ViewModels.Charts;
+using GUI.ViewModels.Help;
 
 namespace GUI;
 
@@ -116,6 +117,7 @@ public partial class App : Application
         collection.AddTransient<TeacherIndividualPlanViewModel>();
         collection.AddTransient<CityViewModel>();
         collection.AddTransient<StreetViewModel>();
+        collection.AddTransient<ManualViewModel>();
         
         return collection;
     }
