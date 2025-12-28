@@ -6,51 +6,54 @@ using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Core.Interfaces.Services;
+using Models.Models.Tables;
 
 namespace GUI.ViewModels.Entities.Base;
 
-public abstract partial class BaseCrudViewModel<T>(IQueryService queryService) : ViewModelBase where T : class, new()
+public abstract partial class BaseCrudViewModel<T>(IQueryService queryService) : ViewModelBase where T : TableBase, new()
 {
     protected readonly IQueryService _queryService = queryService;
-    
+
     [ObservableProperty]
     private ObservableCollection<T> _items = [];
-    
+
     [ObservableProperty]
     private ObservableCollection<T> _filteredItems = [];
-    
+
     [ObservableProperty]
     private T? _selectedItem;
-    
+
     [ObservableProperty]
     private bool _isLoading;
-    
+
     [ObservableProperty]
     private string _statusMessage = "";
-    
+
     [ObservableProperty]
     private string _searchText = "";
+
+    private int _lastSavedId;
 
     [RelayCommand]
     public virtual async Task LoadDataAsync()
     {
         IsLoading = true;
         StatusMessage = "Загрузка данных...";
-        
+
         try
         {
             var query = GetSelectQuery();
             var results = await _queryService.ExecuteQueryAsync<T>(query);
-            
+
             Items.Clear();
             FilteredItems.Clear();
-            
+
             foreach (var item in results)
             {
                 Items.Add(item);
                 FilteredItems.Add(item);
             }
-            
+
             StatusMessage = $"Загружено {Items.Count} записей";
         }
         catch (InvalidOperationException ex) when (ex.Message.Contains("Строка подключения не установлена"))
@@ -66,7 +69,7 @@ public abstract partial class BaseCrudViewModel<T>(IQueryService queryService) :
             IsLoading = false;
         }
     }
-    
+
     [RelayCommand]
     public virtual async Task AddNewAsync()
     {
@@ -77,7 +80,7 @@ public abstract partial class BaseCrudViewModel<T>(IQueryService queryService) :
             Items.Add(newItem);
             FilteredItems.Add(newItem);
             SelectedItem = newItem;
-            
+
             StatusMessage = "Новая запись добавлена. Сохраните изменения.";
         }
         catch (Exception ex)
@@ -85,7 +88,7 @@ public abstract partial class BaseCrudViewModel<T>(IQueryService queryService) :
             StatusMessage = $"Ошибка добавления: {ex.Message}";
         }
     }
-    
+
     [RelayCommand]
     public virtual async Task SaveAsync()
     {
@@ -94,24 +97,36 @@ public abstract partial class BaseCrudViewModel<T>(IQueryService queryService) :
             StatusMessage = "Не выбрана запись для сохранения";
             return;
         }
-        
+
         IsLoading = true;
         StatusMessage = "Сохранение данных...";
-        
+
         try
         {
-            if (IsNewItem(SelectedItem))
+            if (SelectedItem.Id <= 0)  
             {
                 await InsertItemAsync(SelectedItem);
                 StatusMessage = "Запись успешно добавлена";
+                _lastSavedId = SelectedItem.Id;
             }
             else
             {
                 await UpdateItemAsync(SelectedItem);
                 StatusMessage = "Запись успешно обновлена";
+                _lastSavedId = SelectedItem.Id;
             }
-            
+
             await LoadDataAsync();
+
+            var updatedItem = Items.FirstOrDefault(x => x.Id == _lastSavedId);
+            if (updatedItem != null)
+            {
+                SelectedItem = updatedItem;
+            }
+            else if (Items.Any())
+            {
+                SelectedItem = Items.Last();
+            }
         }
         catch (InvalidOperationException ex) when (ex.Message.Contains("Строка подключения не установлена"))
         {
@@ -126,7 +141,7 @@ public abstract partial class BaseCrudViewModel<T>(IQueryService queryService) :
             IsLoading = false;
         }
     }
-    
+
     [RelayCommand]
     public virtual async Task DeleteAsync()
     {
@@ -135,22 +150,22 @@ public abstract partial class BaseCrudViewModel<T>(IQueryService queryService) :
             StatusMessage = "Не выбрана запись для удаления";
             return;
         }
-        
+
         if (!await ConfirmDeleteAsync())
         {
             return;
         }
-        
+
         IsLoading = true;
         StatusMessage = "Удаление записи...";
-        
+
         try
         {
             await DeleteItemAsync(SelectedItem);
             Items.Remove(SelectedItem);
             FilteredItems.Remove(SelectedItem);
             SelectedItem = null;
-            
+
             StatusMessage = "Запись успешно удалена";
         }
         catch (InvalidOperationException ex) when (ex.Message.Contains("Строка подключения не установлена"))
@@ -166,7 +181,7 @@ public abstract partial class BaseCrudViewModel<T>(IQueryService queryService) :
             IsLoading = false;
         }
     }
-    
+
     [RelayCommand]
     public virtual async Task ExportAsync()
     {
@@ -181,14 +196,14 @@ public abstract partial class BaseCrudViewModel<T>(IQueryService queryService) :
             StatusMessage = $"Ошибка экспорта: {ex.Message}";
         }
     }
-    
+
     [RelayCommand]
     public virtual async Task SearchAsync()
     {
         await Task.Delay(0);
         if (string.IsNullOrWhiteSpace(SearchText))
         {
-            
+
             FilteredItems.Clear();
             foreach (var item in Items)
             {
@@ -197,17 +212,17 @@ public abstract partial class BaseCrudViewModel<T>(IQueryService queryService) :
             StatusMessage = $"Показаны все {FilteredItems.Count} записей";
             return;
         }
-        
+
         try
         {
             var filtered = FilterItems(SearchText).ToList();
             FilteredItems.Clear();
-            
+
             foreach (var item in filtered)
             {
                 FilteredItems.Add(item);
             }
-            
+
             StatusMessage = $"Найдено {FilteredItems.Count} записей";
         }
         catch (Exception ex)
@@ -215,23 +230,22 @@ public abstract partial class BaseCrudViewModel<T>(IQueryService queryService) :
             StatusMessage = $"Ошибка поиска: {ex.Message}";
         }
     }
-    
-    
+
+
     protected abstract string GetSelectQuery();
     protected abstract Task InsertItemAsync(T item);
     protected abstract Task UpdateItemAsync(T item);
     protected abstract Task DeleteItemAsync(T item);
-    
+
     protected virtual T CreateNewItem() => new();
-    protected virtual bool IsNewItem(T item) => true;
     protected virtual Task<bool> ConfirmDeleteAsync() => Task.FromResult(true);
-    
+
     protected virtual IEnumerable<T> FilterItems(string searchText)
     {
         return Items.Where(item =>
             item.ToString()?.Contains(searchText, StringComparison.OrdinalIgnoreCase) ?? false);
     }
-    
+
     protected virtual Task<string> ExportDataAsync() => Task.FromResult(string.Join("\n", Items.Select(i => i.ToString())));
     protected virtual Task SaveExportFileAsync(string data)
     {
