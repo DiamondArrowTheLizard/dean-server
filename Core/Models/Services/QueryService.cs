@@ -223,6 +223,30 @@ WHERE id = @id;",
 DELETE FROM Performance_KnowledgeCheckType WHERE id_performance = @id;
 DELETE FROM Performance_Discipline WHERE id_performance = @id;
 DELETE FROM Performance WHERE id = @id;",
+            ["GetAllQualificationWorks"] = @"SELECT 
+    qw.id,
+    qw.work_name AS WorkName,
+    qw.id_teacher AS IdTeacher,
+    t.last_name || ' ' || t.first_name || ' ' || t.middle_name AS TeacherName
+FROM QualificationWork qw
+LEFT JOIN Teacher t ON qw.id_teacher = t.id
+ORDER BY qw.id;",
+
+            ["InsertQualificationWork"] = @"INSERT INTO QualificationWork (
+    work_name, id_teacher
+) VALUES (
+    @workName, @idTeacher
+) RETURNING id;",
+
+            ["UpdateQualificationWork"] = @"UPDATE QualificationWork SET 
+    work_name = @workName,
+    id_teacher = @idTeacher
+WHERE id = @id;",
+
+            ["DeleteQualificationWork"] = @"DELETE FROM QualificationWork WHERE id = @id;",
+
+            ["DeleteQualificationWorkWithDependencies"] = @"DELETE FROM Student_QualificationWork WHERE id_qualificationwork = @id;
+DELETE FROM QualificationWork WHERE id = @id;",
         };
 
         return queries.ContainsKey(queryName) ? queries[queryName] : string.Empty;
