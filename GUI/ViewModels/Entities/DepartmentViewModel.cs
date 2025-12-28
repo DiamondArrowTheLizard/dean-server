@@ -224,16 +224,3 @@ public class DepartmentDisplay : TableBase
         return $"{DepartmentName} ({FacultyName})";
     }
 }
-
-public class Faculty : TableBase
-{
-    public string FacultyName { get; set; } = string.Empty;
-
-    public Faculty() : base(0) { }
-    public Faculty(int id) : base(id) { }
-
-    public override string ToString()
-    {
-        return FacultyName;
-    }
-}
