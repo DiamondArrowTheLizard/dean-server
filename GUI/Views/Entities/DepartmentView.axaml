@@ -54,14 +54,13 @@
         
         
         <DataGrid Grid.Row="3" 
-                  ItemsSource="{Binding Items}"
+                  ItemsSource="{Binding FilteredItems}"
                   SelectedItem="{Binding SelectedItem}"
                   AutoGenerateColumns="False"
                   CanUserSortColumns="True"
                   CanUserReorderColumns="True"
                   CanUserResizeColumns="True"
                   GridLinesVisibility="All"
-                  IsReadonly="False"
                   Margin="10"
                   BorderThickness="1"
                   BorderBrush="Gray">

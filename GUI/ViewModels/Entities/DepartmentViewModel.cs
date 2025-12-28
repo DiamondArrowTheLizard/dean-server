@@ -35,7 +35,6 @@ public partial class DepartmentViewModel(IQueryService queryService) : BaseCrudV
         }
     }
 
-
     public override async Task LoadDataAsync()
     {
         IsLoading = true;
@@ -43,10 +42,7 @@ public partial class DepartmentViewModel(IQueryService queryService) : BaseCrudV
 
         try
         {
-
             await LoadFacultiesAsync();
-
-
             await base.LoadDataAsync();
         }
         catch (Exception ex)
@@ -75,6 +71,13 @@ public partial class DepartmentViewModel(IQueryService queryService) : BaseCrudV
 
         var newId = await _queryService.ExecuteScalarAsync<int>(query, parameters);
         item.Id = newId;
+
+
+        var faculty = Faculties.FirstOrDefault(f => f.Id == item.IdFaculty);
+        if (faculty != null)
+        {
+            item.FacultyName = faculty.FacultyName;
+        }
     }
 
     protected override async Task UpdateItemAsync(DepartmentDisplay item)
@@ -88,6 +91,13 @@ public partial class DepartmentViewModel(IQueryService queryService) : BaseCrudV
         };
 
         await _queryService.ExecuteNonQueryAsync(query, parameters);
+
+
+        var faculty = Faculties.FirstOrDefault(f => f.Id == item.IdFaculty);
+        if (faculty != null)
+        {
+            item.FacultyName = faculty.FacultyName;
+        }
     }
 
     protected override async Task DeleteItemAsync(DepartmentDisplay item)
@@ -114,20 +124,24 @@ public partial class DepartmentViewModel(IQueryService queryService) : BaseCrudV
             _ = LoadFacultiesAsync();
         }
 
+        var selectedFaculty = Faculties.FirstOrDefault();
+
         return new DepartmentDisplay
         {
             Id = 0,
             DepartmentName = "Новая кафедра",
-            IdFaculty = Faculties.FirstOrDefault()?.Id ?? 1,
-            FacultyName = Faculties.FirstOrDefault()?.FacultyName ?? ""
+            IdFaculty = selectedFaculty?.Id ?? 1,
+            FacultyName = selectedFaculty?.FacultyName ?? "Неизвестный факультет"
         };
     }
 
     protected override IEnumerable<DepartmentDisplay> FilterItems(string searchText)
     {
+        var searchLower = searchText.ToLowerInvariant();
+
         return Items.Where(d =>
-            d.DepartmentName.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
-            d.FacultyName.Contains(searchText, StringComparison.OrdinalIgnoreCase));
+            (d.DepartmentName != null && d.DepartmentName.ToLowerInvariant().Contains(searchLower)) ||
+            (d.FacultyName != null && d.FacultyName.ToLowerInvariant().Contains(searchLower)));
     }
 }
 
@@ -139,6 +153,11 @@ public class DepartmentDisplay : TableBase
 
     public DepartmentDisplay() : base(0) { }
     public DepartmentDisplay(int id) : base(id) { }
+
+    public override string ToString()
+    {
+        return $"{DepartmentName} ({FacultyName})";
+    }
 }
 
 public class Faculty : TableBase
@@ -147,4 +166,9 @@ public class Faculty : TableBase
 
     public Faculty() : base(0) { }
     public Faculty(int id) : base(id) { }
+
+    public override string ToString()
+    {
+        return FacultyName;
+    }
 }

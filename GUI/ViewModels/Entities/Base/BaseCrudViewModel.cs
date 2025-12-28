@@ -17,6 +17,9 @@ public abstract partial class BaseCrudViewModel<T>(IQueryService queryService) :
     private ObservableCollection<T> _items = [];
     
     [ObservableProperty]
+    private ObservableCollection<T> _filteredItems = [];
+    
+    [ObservableProperty]
     private T? _selectedItem;
     
     [ObservableProperty]
@@ -40,9 +43,12 @@ public abstract partial class BaseCrudViewModel<T>(IQueryService queryService) :
             var results = await _queryService.ExecuteQueryAsync<T>(query);
             
             Items.Clear();
+            FilteredItems.Clear();
+            
             foreach (var item in results)
             {
                 Items.Add(item);
+                FilteredItems.Add(item);
             }
             
             StatusMessage = $"Загружено {Items.Count} записей";
@@ -69,6 +75,7 @@ public abstract partial class BaseCrudViewModel<T>(IQueryService queryService) :
         {
             var newItem = CreateNewItem();
             Items.Add(newItem);
+            FilteredItems.Add(newItem);
             SelectedItem = newItem;
             
             StatusMessage = "Новая запись добавлена. Сохраните изменения.";
@@ -141,6 +148,7 @@ public abstract partial class BaseCrudViewModel<T>(IQueryService queryService) :
         {
             await DeleteItemAsync(SelectedItem);
             Items.Remove(SelectedItem);
+            FilteredItems.Remove(SelectedItem);
             SelectedItem = null;
             
             StatusMessage = "Запись успешно удалена";
@@ -179,20 +187,27 @@ public abstract partial class BaseCrudViewModel<T>(IQueryService queryService) :
     {
         if (string.IsNullOrWhiteSpace(SearchText))
         {
-            await LoadDataAsync();
+            
+            FilteredItems.Clear();
+            foreach (var item in Items)
+            {
+                FilteredItems.Add(item);
+            }
+            StatusMessage = $"Показаны все {FilteredItems.Count} записей";
             return;
         }
         
         try
         {
-            var filtered = FilterItems(SearchText);
-            Items.Clear();
+            var filtered = FilterItems(SearchText).ToList();
+            FilteredItems.Clear();
+            
             foreach (var item in filtered)
             {
-                Items.Add(item);
+                FilteredItems.Add(item);
             }
             
-            StatusMessage = $"Найдено {Items.Count} записей";
+            StatusMessage = $"Найдено {FilteredItems.Count} записей";
         }
         catch (Exception ex)
         {
@@ -209,7 +224,13 @@ public abstract partial class BaseCrudViewModel<T>(IQueryService queryService) :
     protected virtual T CreateNewItem() => new T();
     protected virtual bool IsNewItem(T item) => true;
     protected virtual Task<bool> ConfirmDeleteAsync() => Task.FromResult(true);
-    protected virtual IEnumerable<T> FilterItems(string searchText) => Items;
+    
+    protected virtual IEnumerable<T> FilterItems(string searchText)
+    {
+        return Items.Where(item =>
+            item.ToString()?.Contains(searchText, StringComparison.OrdinalIgnoreCase) ?? false);
+    }
+    
     protected virtual Task<string> ExportDataAsync() => Task.FromResult(string.Join("\n", Items.Select(i => i.ToString())));
     protected virtual Task SaveExportFileAsync(string data)
     {
