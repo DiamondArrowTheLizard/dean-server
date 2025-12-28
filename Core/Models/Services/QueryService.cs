@@ -178,6 +178,51 @@ WHERE id = @id;",
             ["DeleteScheduleWithDependencies"] = @"DELETE FROM Teacher_Schedule WHERE id_schedule = @id;
 DELETE FROM Classroom_Schedule WHERE id_schedule = @id;
 DELETE FROM Schedule WHERE id = @id;",
+            ["GetAllPerformances"] = @"SELECT 
+    p.id,
+    p.mark_type AS MarkTypeEnum,
+    p.mark AS Mark,
+    p.id_teacher AS IdTeacher,
+    p.id_student AS IdStudent,
+    t.last_name || ' ' || t.first_name || ' ' || t.middle_name AS TeacherName,
+    s.last_name || ' ' || s.first_name || ' ' || s.middle_name AS StudentName,
+    sg.group_number AS GroupNumber
+FROM Performance p
+LEFT JOIN Teacher t ON p.id_teacher = t.id
+LEFT JOIN Student s ON p.id_student = s.id
+LEFT JOIN StudyGroup sg ON s.id_studygroup = sg.id
+ORDER BY p.id;",
+
+            ["GetAllTeachers"] = @"SELECT 
+    id,
+    last_name AS LastName,
+    first_name AS FirstName,
+    middle_name AS MiddleName,
+    id_position AS IdPosition,
+    id_department AS IdDepartment
+FROM Teacher ORDER BY last_name, first_name;",
+
+            ["GetAllKnowledgeCheckTypes"] = @"SELECT id, knowledge_check_type AS KnowledgeCheckTypeEnum FROM KnowledgeCheckType ORDER BY id;",
+
+            ["InsertPerformance"] = @"INSERT INTO Performance (
+    mark_type, mark, id_teacher, id_student
+) VALUES (
+    @markType::mark_type_enum, @mark, @idTeacher, @idStudent
+) RETURNING id;",
+
+            ["UpdatePerformance"] = @"UPDATE Performance SET 
+    mark_type = @markType::mark_type_enum,
+    mark = @mark,
+    id_teacher = @idTeacher,
+    id_student = @idStudent
+WHERE id = @id;",
+
+            ["DeletePerformance"] = @"DELETE FROM Performance WHERE id = @id;",
+
+            ["DeletePerformanceWithDependencies"] = @"DELETE FROM Curriculum_Performance WHERE id_performance = @id;
+DELETE FROM Performance_KnowledgeCheckType WHERE id_performance = @id;
+DELETE FROM Performance_Discipline WHERE id_performance = @id;
+DELETE FROM Performance WHERE id = @id;",
         };
 
         return queries.ContainsKey(queryName) ? queries[queryName] : string.Empty;

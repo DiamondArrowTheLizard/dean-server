@@ -1,0 +1,81 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:GUI.ViewModels.Entities"
+             xmlns:local="clr-namespace:GUI.Views.Entities"
+             x:Class="GUI.Views.Entities.PerformanceView"
+             x:DataType="vm:PerformanceViewModel">
+    <Design.DataContext>
+        <vm:PerformanceViewModel/>
+    </Design.DataContext>
+    
+    <Grid RowDefinitions="Auto, Auto, Auto, *">
+        
+        <Border Grid.Row="0" Padding="10">
+            <TextBlock Text="{Binding StatusMessage}" 
+                       VerticalAlignment="Center"
+                       FontWeight="Bold"/>
+        </Border>
+        
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="10" Margin="10">
+            <TextBlock Text="Поиск:" VerticalAlignment="Center"/>
+            <TextBox Text="{Binding SearchText}" Width="200"/>
+            <Button Content="Найти" Command="{Binding SearchCommand}"/>
+            <Button Content="Сброс" Command="{Binding LoadDataCommand}"/>
+        </StackPanel>
+        
+        <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="10" Margin="10">
+            <Button Content="Загрузить" 
+                    Command="{Binding LoadDataCommand}"
+                    IsEnabled="{Binding !IsLoading}"/>
+            
+            <Button Content="Добавить" 
+                    Command="{Binding AddNewCommand}"
+                    IsEnabled="False"/>
+            
+            <Button Content="Сохранить" 
+                    Command="{Binding SaveCommand}"
+                    IsEnabled="False"/>
+            
+            <Button Content="Удалить" 
+                    Command="{Binding DeleteCommand}"
+                    IsEnabled="False"/>
+            
+            <Button Content="Экспорт" 
+                    Command="{Binding ExportCommand}"
+                    IsEnabled="{Binding Items.Count}"/>
+            
+            <ProgressBar Minimum="0" Maximum="100" Value="0" 
+                        IsVisible="{Binding IsLoading}"
+                        Width="100" Height="20" Margin="10,0"/>
+        </StackPanel>
+        
+        <ScrollViewer Grid.Row="3" 
+                      VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Auto"
+                      Margin="10">
+            <DataGrid ItemsSource="{Binding FilteredItems}"
+                      SelectedItem="{Binding SelectedItem}"
+                      AutoGenerateColumns="False"
+                      CanUserSortColumns="True"
+                      CanUserReorderColumns="True"
+                      CanUserResizeColumns="True"
+                      GridLinesVisibility="All"
+                      BorderThickness="1"
+                      BorderBrush="Gray"
+                      Height="800"
+                      Width="2000">
+                
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="50" />
+                    <DataGridTextColumn Header="Тип оценки" Binding="{Binding MarkTypeEnum, Mode=TwoWay}" Width="120"/>
+                    <DataGridTextColumn Header="Оценка" Binding="{Binding Mark, Mode=TwoWay}" Width="80"/>
+                    <DataGridTextColumn Header="Преподаватель" Binding="{Binding TeacherName}" Width="300" />
+                    <DataGridTextColumn Header="Студент" Binding="{Binding StudentName}" Width="300" />
+                    <DataGridTextColumn Header="Группа" Binding="{Binding GroupNumber}" Width="150" />
+                </DataGrid.Columns>
+                
+            </DataGrid>
+        </ScrollViewer>
+        
+    </Grid>
+</UserControl>

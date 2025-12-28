@@ -102,6 +102,7 @@ public partial class App : Application
         collection.AddTransient<ClassroomViewModel>();
         collection.AddTransient<StudentViewModel>();
         collection.AddTransient<ScheduleViewModel>();
+        collection.AddTransient<PerformanceViewModel>();
 
         return collection;
     }

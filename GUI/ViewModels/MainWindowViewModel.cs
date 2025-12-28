@@ -1,5 +1,4 @@
-﻿﻿using System;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using GUI.ViewModels.Authentication;
 using GUI.ViewModels.Entities;
@@ -68,23 +67,26 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]
     private ScheduleViewModel _scheduleViewModel;
 
+    [ObservableProperty]
+    private PerformanceViewModel _performanceViewModel;
     public MainWindowViewModel(
-    IConnectionInfo connectionInfo,
-    AuthenticationViewModel authenticationViewModel,
-    ChangePasswordViewModel changePasswordViewModel,
-    TerminalWindowViewModel terminalWindowViewModel,
-    WelcomeScreenViewModel welcomeScreenViewModel,
-    MenuViewModel menuViewModel,
-    DeanRoleViewModel deanRoleViewModel,
-    AdminRoleViewModel adminRoleViewModel,
-    MethodistRoleViewModel methodistRoleViewModel,
-    HeadOfDepartmentRoleViewModel headOfDepartmentRoleViewModel,
-    ScientificSecretaryRoleViewModel scientificSecretaryRoleViewModel,
-    DepartmentViewModel departmentViewModel,
-    ClassroomViewModel classroomViewModel,
-    StudentViewModel studentViewModel,
-    ScheduleViewModel scheduleViewModel,
-    TeacherRoleViewModel teacherRoleViewModel)
+        IConnectionInfo connectionInfo,
+        AuthenticationViewModel authenticationViewModel,
+        ChangePasswordViewModel changePasswordViewModel,
+        TerminalWindowViewModel terminalWindowViewModel,
+        WelcomeScreenViewModel welcomeScreenViewModel,
+        MenuViewModel menuViewModel,
+        DeanRoleViewModel deanRoleViewModel,
+        AdminRoleViewModel adminRoleViewModel,
+        MethodistRoleViewModel methodistRoleViewModel,
+        HeadOfDepartmentRoleViewModel headOfDepartmentRoleViewModel,
+        ScientificSecretaryRoleViewModel scientificSecretaryRoleViewModel,
+        DepartmentViewModel departmentViewModel,
+        ClassroomViewModel classroomViewModel,
+        StudentViewModel studentViewModel,
+        TeacherRoleViewModel teacherRoleViewModel,
+        ScheduleViewModel scheduleViewModel,
+        PerformanceViewModel performanceViewModel)
     {
         _connectionInfo = connectionInfo;
 
@@ -110,6 +112,7 @@ public partial class MainWindowViewModel : ViewModelBase
         ClassroomViewModel = classroomViewModel;
         StudentViewModel = studentViewModel;
         ScheduleViewModel = scheduleViewModel;
+        PerformanceViewModel = performanceViewModel;
 
         AuthenticationViewModel.OnButtonClicked += OnAuthentication;
 
@@ -226,7 +229,7 @@ public partial class MainWindowViewModel : ViewModelBase
     public void OpenTeacherIndividualPlan() => ChangeView(TerminalWindowViewModel);
 
     [RelayCommand]
-    public void OpenPerformance() => ChangeView(TerminalWindowViewModel);
+    public void OpenPerformance() => ChangeView(PerformanceViewModel);
 
     [RelayCommand]
     public void OpenSchedule() => ChangeView(ScheduleViewModel);
