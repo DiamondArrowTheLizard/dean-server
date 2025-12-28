@@ -32,15 +32,16 @@
                     IsEnabled="{Binding !IsLoading}"/>
             
             <Button Content="Добавить" 
+                    IsEnabled="False"
                     Command="{Binding AddNewCommand}"/>
             
             <Button Content="Сохранить" 
                     Command="{Binding SaveCommand}"
-                    IsEnabled="{Binding SelectedItem}"/>
+                    IsEnabled="False"/>
             
             <Button Content="Удалить" 
                     Command="{Binding DeleteCommand}"
-                    IsEnabled="{Binding SelectedItem}"/>
+                    IsEnabled="False"/>
             
             <Button Content="Экспорт" 
                     Command="{Binding ExportCommand}"
