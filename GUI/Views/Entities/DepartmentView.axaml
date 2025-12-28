@@ -1,0 +1,105 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:GUI.ViewModels.Entities"
+             xmlns:local="clr-namespace:GUI.Views.Entities"
+             x:Class="GUI.Views.Entities.DepartmentView"
+             x:DataType="vm:DepartmentViewModel">
+    <Design.DataContext>
+        <vm:DepartmentViewModel/>
+    </Design.DataContext>
+    
+    <Grid RowDefinitions="Auto, Auto, Auto, *">
+        
+        
+        <Border Grid.Row="0" Padding="10">
+            <TextBlock Text="{Binding StatusMessage}" 
+                       VerticalAlignment="Center"
+                       FontWeight="Bold"/>
+        </Border>
+        
+        
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="10" Margin="10">
+            <TextBlock Text="Поиск:" VerticalAlignment="Center"/>
+            <TextBox Text="{Binding SearchText}" Width="200"/>
+            <Button Content="Найти" Command="{Binding SearchCommand}"/>
+            <Button Content="Сброс" Command="{Binding LoadDataCommand}"/>
+        </StackPanel>
+        
+        
+        <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="10" Margin="10">
+            <Button Content="Загрузить" 
+                    Command="{Binding LoadDataCommand}"
+                    IsEnabled="{Binding !IsLoading}"/>
+            
+            <Button Content="Добавить" 
+                    Command="{Binding AddNewCommand}"/>
+            
+            <Button Content="Сохранить" 
+                    Command="{Binding SaveCommand}"
+                    IsEnabled="{Binding SelectedItem}"/>
+            
+            <Button Content="Удалить" 
+                    Command="{Binding DeleteCommand}"
+                    IsEnabled="{Binding SelectedItem}"/>
+            
+            <Button Content="Экспорт" 
+                    Command="{Binding ExportCommand}"
+                    IsEnabled="{Binding Items.Count}"/>
+            
+            
+            <ProgressBar Minimum="0" Maximum="100" Value="0" 
+                        IsVisible="{Binding IsLoading}"
+                        Width="100" Height="20" Margin="10,0"/>
+        </StackPanel>
+        
+        
+        <DataGrid Grid.Row="3" 
+                  ItemsSource="{Binding Items}"
+                  SelectedItem="{Binding SelectedItem}"
+                  AutoGenerateColumns="False"
+                  CanUserSortColumns="True"
+                  CanUserReorderColumns="True"
+                  CanUserResizeColumns="True"
+                  GridLinesVisibility="All"
+                  IsReadonly="False"
+                  Margin="10"
+                  BorderThickness="1"
+                  BorderBrush="Gray">
+            
+            <DataGrid.Columns>
+                
+                <DataGridTextColumn Header="ID" 
+                                   Binding="{Binding Id}"
+                                   Width="50"
+                                   IsReadOnly="True"/>
+                
+                
+                <DataGridTextColumn Header="Название кафедры" 
+                                   Binding="{Binding DepartmentName, Mode=TwoWay}"
+                                   Width="*"
+                                   MinWidth="150"/>
+                
+                
+                <DataGridTemplateColumn Header="Факультет"
+                                       Width="200">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            
+                            <TextBlock Text="{Binding FacultyName}"
+                                      VerticalAlignment="Center"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                    
+                </DataGridTemplateColumn>
+                
+                
+                <DataGridTextColumn Header="Название факультета" 
+                                   Binding="{Binding FacultyName}"
+                                   Width="200"
+                                   IsReadOnly="True"/>
+            </DataGrid.Columns>
+            
+        </DataGrid>
+        
+    </Grid>
+</UserControl>

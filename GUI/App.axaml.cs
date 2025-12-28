@@ -22,6 +22,9 @@ using GUI.ViewModels.RoleMenus.Methodist;
 using GUI.ViewModels.RoleMenus.ScientificSecretary;
 using GUI.ViewModels.RoleMenus.HeadOfDepartment;
 using GUI.ViewModels.RoleMenus.Teacher;
+using GUI.ViewModels.Entities;
+using Core.Interfaces.Services;
+using Models.Services;
 
 namespace GUI;
 
@@ -78,20 +81,24 @@ public partial class App : Application
         collection.AddTransient<ITerminalQueryHandler, TerminalQueryHandler>();
         collection.AddTransient<IAuthenticationHandler, AuthenticationHandler>();
         collection.AddTransient<IChangePasswordHandler, ChangePasswordHandler>();
+        collection.AddSingleton<IQueryService, QueryService>();
 
         collection.AddSingleton<MainWindowViewModel>();
         collection.AddSingleton<AuthenticationViewModel>();
+
         collection.AddTransient<ChangePasswordViewModel>();
         collection.AddTransient<TerminalWindowViewModel>();
-        collection.AddSingleton<WelcomeScreenViewModel>();
+        collection.AddTransient<WelcomeScreenViewModel>();
 
-        collection.AddSingleton<MenuViewModel>();
-        collection.AddSingleton<DeanRoleViewModel>();
-        collection.AddSingleton<AdminRoleViewModel>();
-        collection.AddSingleton<MethodistRoleViewModel>();
-        collection.AddSingleton<ScientificSecretaryRoleViewModel>();
-        collection.AddSingleton<HeadOfDepartmentRoleViewModel>();
-        collection.AddSingleton<TeacherRoleViewModel>();
+        collection.AddTransient<MenuViewModel>();
+        collection.AddTransient<DeanRoleViewModel>();
+        collection.AddTransient<AdminRoleViewModel>();
+        collection.AddTransient<MethodistRoleViewModel>();
+        collection.AddTransient<ScientificSecretaryRoleViewModel>();
+        collection.AddTransient<HeadOfDepartmentRoleViewModel>();
+        collection.AddTransient<TeacherRoleViewModel>();
+
+        collection.AddTransient<DepartmentViewModel>();
 
         return collection;
     }

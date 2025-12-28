@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using GUI.ViewModels.Authentication;
+using GUI.ViewModels.Entities;
 using GUI.ViewModels.RoleMenus.Admin;
 using GUI.ViewModels.RoleMenus.Dean;
 using GUI.ViewModels.RoleMenus.HeadOfDepartment;
@@ -55,6 +56,8 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]
     private MenuViewModel? _currentMenu;
 
+    [ObservableProperty]
+    private DepartmentViewModel _departmentViewModel;
 
     public MainWindowViewModel(
     IConnectionInfo connectionInfo,
@@ -68,6 +71,7 @@ public partial class MainWindowViewModel : ViewModelBase
     MethodistRoleViewModel methodistRoleViewModel,
     HeadOfDepartmentRoleViewModel headOfDepartmentRoleViewModel,
     ScientificSecretaryRoleViewModel scientificSecretaryRoleViewModel,
+    DepartmentViewModel departmentViewModel,
     TeacherRoleViewModel teacherRoleViewModel)
     {
         _connectionInfo = connectionInfo;
@@ -89,6 +93,8 @@ public partial class MainWindowViewModel : ViewModelBase
 
         CurrentView = AuthenticationViewModel;
         CurrentMenu = null;
+
+        DepartmentViewModel = departmentViewModel;
 
         AuthenticationViewModel.OnButtonClicked += OnAuthentication;
 
@@ -171,7 +177,7 @@ public partial class MainWindowViewModel : ViewModelBase
     public void OpenStreet() => ChangeView(TerminalWindowViewModel);
 
     [RelayCommand]
-    public void OpenDepartment() => ChangeView(TerminalWindowViewModel);
+    public void OpenDepartment() => ChangeView(DepartmentViewModel);
 
     [RelayCommand]
     public void OpenDiscipline() => ChangeView(TerminalWindowViewModel);
@@ -226,4 +232,5 @@ public partial class MainWindowViewModel : ViewModelBase
 
     [RelayCommand]
     public void OpenTeacherIndividualPlanDiscipline() => ChangeView(TerminalWindowViewModel);
+
 }
