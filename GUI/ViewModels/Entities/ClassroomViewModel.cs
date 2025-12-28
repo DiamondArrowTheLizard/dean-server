@@ -32,6 +32,11 @@ public partial class ClassroomViewModel(IQueryService queryService) : BaseCrudVi
         }
     }
 
+    public override async Task AddNewAsync()
+    {
+        await base.AddNewAsync();
+    }
+
     protected override string GetSelectQuery()
     {
         return _queryService.GetQuery("GetAllClassrooms");
@@ -63,7 +68,7 @@ public partial class ClassroomViewModel(IQueryService queryService) : BaseCrudVi
 
     protected override async Task DeleteItemAsync(ClassroomDisplay item)
     {
-        var query = _queryService.GetQuery("DeleteClassroom");
+        var query = _queryService.GetQuery("DeleteClassroomWithDependencies");
         var parameters = new Dictionary<string, object>
         {
             ["id"] = item.Id
@@ -76,9 +81,14 @@ public partial class ClassroomViewModel(IQueryService queryService) : BaseCrudVi
     {
         return new ClassroomDisplay
         {
-            Id = 0,
+            Id = -1,
             ClassroomName = "Новая аудитория"
         };
+    }
+
+    protected override async Task<bool> ConfirmDeleteAsync()
+    {
+        return await Task.FromResult(true);
     }
 
     protected override IEnumerable<ClassroomDisplay> FilterItems(string searchText)

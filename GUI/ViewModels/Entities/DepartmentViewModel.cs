@@ -56,6 +56,22 @@ public partial class DepartmentViewModel(IQueryService queryService) : BaseCrudV
         }
     }
 
+    public override async Task AddNewAsync()
+    {
+        if (!Faculties.Any())
+        {
+            await LoadFacultiesAsync();
+        }
+
+        if (!Faculties.Any())
+        {
+            StatusMessage = "Невозможно добавить кафедру: нет ни одного факультета.";
+            return;
+        }
+
+        await base.AddNewAsync();
+    }
+
     protected override string GetSelectQuery()
     {
         return _queryService.GetQuery("GetAllDepartments");
@@ -101,7 +117,7 @@ public partial class DepartmentViewModel(IQueryService queryService) : BaseCrudV
 
     protected override async Task DeleteItemAsync(DepartmentDisplay item)
     {
-        var query = _queryService.GetQuery("DeleteDepartment");
+        var query = _queryService.GetQuery("DeleteDepartmentWithDependencies");
         var parameters = new Dictionary<string, object>
         {
             ["id"] = item.Id
@@ -112,20 +128,20 @@ public partial class DepartmentViewModel(IQueryService queryService) : BaseCrudV
 
     protected override DepartmentDisplay CreateNewItem()
     {
-        if (!Faculties.Any())
-        {
-            _ = LoadFacultiesAsync();
-        }
-
         var selectedFaculty = Faculties.FirstOrDefault();
 
         return new DepartmentDisplay
         {
-            Id = 0,
+            Id = -1,
             DepartmentName = "Новая кафедра",
             IdFaculty = selectedFaculty?.Id ?? 1,
             FacultyName = selectedFaculty?.FacultyName ?? "Неизвестный факультет"
         };
+    }
+
+    protected override async Task<bool> ConfirmDeleteAsync()
+    {
+        return await Task.FromResult(true);
     }
 
     protected override IEnumerable<DepartmentDisplay> FilterItems(string searchText)

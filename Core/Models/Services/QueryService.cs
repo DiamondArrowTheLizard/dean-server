@@ -133,7 +133,12 @@ DELETE FROM Student WHERE id = @id;",
             ["DeleteStudentFacultyOrders"] = @"DELETE FROM Student_FacultyOrder WHERE id_student = @id;",
             ["DeletePerformanceRelated"] = @"DELETE FROM Curriculum_Performance WHERE id_performance IN (SELECT id FROM Performance WHERE id_student = @id);
 DELETE FROM Performance_KnowledgeCheckType WHERE id_performance IN (SELECT id FROM Performance WHERE id_student = @id);
-DELETE FROM Performance_Discipline WHERE id_performance IN (SELECT id FROM Performance WHERE id_student = @id);"
+DELETE FROM Performance_Discipline WHERE id_performance IN (SELECT id FROM Performance WHERE id_student = @id);",
+            ["DeleteDepartmentWithDependencies"] = @"DELETE FROM Teacher WHERE id_department = @id;
+DELETE FROM Department WHERE id = @id;",
+
+            ["DeleteClassroomWithDependencies"] = @"DELETE FROM Classroom_Schedule WHERE id_classroom = @id;
+DELETE FROM Classroom WHERE id = @id;",
         };
 
         return queries.ContainsKey(queryName) ? queries[queryName] : string.Empty;
@@ -166,7 +171,9 @@ DELETE FROM Performance_Discipline WHERE id_performance IN (SELECT id FROM Perfo
             ["DeleteStudentPayments"] = "Удалить платежи студента",
             ["DeleteStudentParents"] = "Удалить связи с родителями студента",
             ["DeleteStudentFacultyOrders"] = "Удалить приказы студента",
-            ["DeletePerformanceRelated"] = "Удалить связанные записи успеваемости"
+            ["DeletePerformanceRelated"] = "Удалить связанные записи успеваемости",
+            ["DeleteDepartmentWithDependencies"] = "Удалить Кафедру с зависимостями",
+            ["DeleteClassroomWithDependencies"] = "Удалить Аудиторию с зависимостями",
         };
     }
 
