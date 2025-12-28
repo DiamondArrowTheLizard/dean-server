@@ -23,8 +23,8 @@ using GUI.ViewModels.RoleMenus.ScientificSecretary;
 using GUI.ViewModels.RoleMenus.HeadOfDepartment;
 using GUI.ViewModels.RoleMenus.Teacher;
 using GUI.ViewModels.Entities;
-using Core.Interfaces.Services;
 using Models.Services;
+using Interfaces.Services;
 
 namespace GUI;
 
@@ -101,6 +101,7 @@ public partial class App : Application
         collection.AddTransient<DepartmentViewModel>();
         collection.AddTransient<ClassroomViewModel>();
         collection.AddTransient<StudentViewModel>();
+        collection.AddTransient<ScheduleViewModel>();
 
         return collection;
     }

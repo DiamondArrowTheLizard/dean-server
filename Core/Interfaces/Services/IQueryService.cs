@@ -1,4 +1,4 @@
-namespace Core.Interfaces.Services;
+namespace Interfaces.Services;
 
 public interface IQueryService
 {

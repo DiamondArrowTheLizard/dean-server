@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Core.Interfaces.Services;
+using Interfaces.Services;
 using Models.Models.Tables;
 
 namespace GUI.ViewModels.Entities.Base;
