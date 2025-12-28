@@ -43,7 +43,7 @@ public class QueryService(IDatabaseConnectionString connectionString) : IQuerySe
                 WHERE id = @id;",
 
             ["DeleteClassroom"] = @"DELETE FROM Classroom WHERE id = @id;",
-            
+
             ["GetAllStudents"] = @"SELECT 
     s.id,
     s.last_name AS LastName,
@@ -139,44 +139,49 @@ DELETE FROM Department WHERE id = @id;",
 
             ["DeleteClassroomWithDependencies"] = @"DELETE FROM Classroom_Schedule WHERE id_classroom = @id;
 DELETE FROM Classroom WHERE id = @id;",
+            ["GetAllSchedules"] = @"SELECT 
+    s.id,
+    s.study_weeks AS StudyWeeks,
+    s.day_of_week AS DayOfWeekEnum,
+    s.start_time AS StartTime,
+    s.end_time AS EndTime,
+    s.class_type AS ClassTypeEnum,
+    s.id_studygroup AS IdStudyGroup,
+    s.id_discipline AS IdDiscipline,
+    sg.group_number AS GroupNumber,
+    d.discipline_name AS DisciplineName
+FROM Schedule s
+LEFT JOIN StudyGroup sg ON s.id_studygroup = sg.id
+LEFT JOIN Discipline d ON s.id_discipline = d.id
+ORDER BY s.id;",
+
+            ["GetAllDisciplines"] = @"SELECT id, discipline_name AS DisciplineName FROM Discipline ORDER BY discipline_name;",
+
+            ["InsertSchedule"] = @"INSERT INTO Schedule (
+    study_weeks, day_of_week, start_time, end_time, class_type, id_studygroup, id_discipline
+) VALUES (
+    @studyWeeks, @dayOfWeek::day_of_week_enum, @startTime, @endTime, @classType::class_type_enum, @idStudyGroup, @idDiscipline
+) RETURNING id;",
+
+            ["UpdateSchedule"] = @"UPDATE Schedule SET 
+    study_weeks = @studyWeeks,
+    day_of_week = @dayOfWeek::day_of_week_enum,
+    start_time = @startTime,
+    end_time = @endTime,
+    class_type = @classType::class_type_enum,
+    id_studygroup = @idStudyGroup,
+    id_discipline = @idDiscipline
+WHERE id = @id;",
+
+            ["DeleteSchedule"] = @"DELETE FROM Schedule WHERE id = @id;",
+
+            ["DeleteScheduleWithDependencies"] = @"DELETE FROM Teacher_Schedule WHERE id_schedule = @id;
+DELETE FROM Classroom_Schedule WHERE id_schedule = @id;
+DELETE FROM Schedule WHERE id = @id;",
         };
 
         return queries.ContainsKey(queryName) ? queries[queryName] : string.Empty;
     }
-
-    public Dictionary<string, string> GetAvailableQueries()
-    {
-        return new Dictionary<string, string>
-        {
-            ["GetAllDepartments"] = "Получить все кафедры",
-            ["GetAllFaculties"] = "Получить все факультеты",
-            ["InsertDepartment"] = "Добавить кафедру",
-            ["UpdateDepartment"] = "Обновить кафедру",
-            ["DeleteDepartment"] = "Удалить кафедру",
-            ["GetAllClassrooms"] = "Получить все аудитории",
-            ["InsertClassroom"] = "Добавить аудиторию",
-            ["UpdateClassroom"] = "Обновить аудиторию",
-            ["DeleteClassroom"] = "Удалить аудиторию",
-            ["GetAllStudents"] = "Получить всех студентов",
-            ["GetAllCities"] = "Получить все города",
-            ["GetAllStreets"] = "Получить все улицы",
-            ["GetAllStudyGroups"] = "Получить все группы",
-            ["InsertStudent"] = "Добавить студента",
-            ["UpdateStudent"] = "Обновить студента",
-            ["DeleteStudent"] = "Удалить студента",
-            ["DeleteStudentWithDependencies"] = "Удалить студента со всеми зависимостями",
-            ["DeleteStudentQualifications"] = "Удалить квалификационные работы студента",
-            ["DeleteStudentPerformance"] = "Удалить успеваемость студента",
-            ["DeleteStudentContracts"] = "Удалить договоры студента",
-            ["DeleteStudentPayments"] = "Удалить платежи студента",
-            ["DeleteStudentParents"] = "Удалить связи с родителями студента",
-            ["DeleteStudentFacultyOrders"] = "Удалить приказы студента",
-            ["DeletePerformanceRelated"] = "Удалить связанные записи успеваемости",
-            ["DeleteDepartmentWithDependencies"] = "Удалить Кафедру с зависимостями",
-            ["DeleteClassroomWithDependencies"] = "Удалить Аудиторию с зависимостями",
-        };
-    }
-
     private void CheckConnection()
     {
         if (string.IsNullOrEmpty(_connectionString.ConnectionString))
@@ -306,17 +311,17 @@ DELETE FROM Classroom WHERE id = @id;",
             throw new InvalidOperationException($"Не удалось найти свойства Year, Month, Day в типе {dateOnlyType}");
         }
 
-        
-        var year = yearProperty.GetValue(dateOnlyValue) is int yearValue 
-            ? yearValue 
+
+        var year = yearProperty.GetValue(dateOnlyValue) is int yearValue
+            ? yearValue
             : throw new InvalidOperationException("Year property returned null");
-        
-        var month = monthProperty.GetValue(dateOnlyValue) is int monthValue 
-            ? monthValue 
+
+        var month = monthProperty.GetValue(dateOnlyValue) is int monthValue
+            ? monthValue
             : throw new InvalidOperationException("Month property returned null");
-            
-        var day = dayProperty.GetValue(dateOnlyValue) is int dayValue 
-            ? dayValue 
+
+        var day = dayProperty.GetValue(dateOnlyValue) is int dayValue
+            ? dayValue
             : throw new InvalidOperationException("Day property returned null");
 
         return new DateTime(year, month, day);
@@ -340,14 +345,14 @@ DELETE FROM Classroom WHERE id = @id;",
                 foreach (var param in parameters)
                 {
                     var parameterValue = param.Value ?? DBNull.Value;
-                    
+
                     if (parameterValue is DateTime dateTimeValue)
                     {
                         command.Parameters.AddWithValue(param.Key, dateTimeValue);
                     }
                     else if (parameterValue is Enum)
                     {
-                        
+
                         var stringValue = parameterValue.ToString();
                         command.Parameters.AddWithValue(param.Key, stringValue?.ToLower() ?? string.Empty);
                     }
@@ -421,14 +426,14 @@ DELETE FROM Classroom WHERE id = @id;",
                 foreach (var param in parameters)
                 {
                     var parameterValue = param.Value ?? DBNull.Value;
-                    
+
                     if (parameterValue is DateTime dateTimeValue)
                     {
                         command.Parameters.AddWithValue(param.Key, dateTimeValue);
                     }
                     else if (parameterValue is Enum)
                     {
-                        
+
                         var stringValue = parameterValue.ToString();
                         command.Parameters.AddWithValue(param.Key, stringValue?.ToLower() ?? string.Empty);
                     }

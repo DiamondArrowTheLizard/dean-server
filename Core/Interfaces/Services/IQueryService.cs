@@ -7,5 +7,4 @@ public interface IQueryService
     Task<IEnumerable<Dictionary<string, object?>>> ExecuteQueryRawAsync(string query);
     Task<T?> ExecuteScalarAsync<T>(string query, Dictionary<string, object>? parameters = null);
     string GetQuery(string queryName);
-    Dictionary<string, string> GetAvailableQueries();
 }
