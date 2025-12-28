@@ -1,5 +1,5 @@
 using System.Reflection;
-using Core.Interfaces.Services;
+using Interfaces.Services;
 using Interfaces.Models;
 using Npgsql;
 
@@ -182,6 +182,7 @@ DELETE FROM Schedule WHERE id = @id;",
 
         return queries.ContainsKey(queryName) ? queries[queryName] : string.Empty;
     }
+
     private void CheckConnection()
     {
         if (string.IsNullOrEmpty(_connectionString.ConnectionString))
@@ -268,6 +269,36 @@ DELETE FROM Schedule WHERE id = @id;",
                             {
                                 convertedValue = Convert.ToSingle(value);
                             }
+                            else if (propType == typeof(TimeSpan))
+                            {
+                                if (value is TimeSpan timeSpanValue)
+                                {
+                                    convertedValue = timeSpanValue;
+                                }
+                                else if (value.GetType().Name == "TimeOnly")
+                                {
+                                    var timeOnlyType = value.GetType();
+                                    var hourProperty = timeOnlyType.GetProperty("Hour");
+                                    var minuteProperty = timeOnlyType.GetProperty("Minute");
+                                    var secondProperty = timeOnlyType.GetProperty("Second");
+
+                                    if (hourProperty != null && minuteProperty != null && secondProperty != null)
+                                    {
+                                        var hour = Convert.ToInt32(hourProperty.GetValue(value));
+                                        var minute = Convert.ToInt32(minuteProperty.GetValue(value));
+                                        var second = Convert.ToInt32(secondProperty.GetValue(value));
+                                        convertedValue = new TimeSpan(hour, minute, second);
+                                    }
+                                    else
+                                    {
+                                        convertedValue = TimeSpan.Parse(value.ToString() ?? "00:00:00");
+                                    }
+                                }
+                                else
+                                {
+                                    convertedValue = TimeSpan.Parse(value.ToString() ?? "00:00:00");
+                                }
+                            }
                             else if (propType.IsEnum)
                             {
                                 var enumString = value.ToString() ?? throw new ArgumentNullException(nameof(value), $"Значение для перечисления {propName} не может быть null");
@@ -350,6 +381,10 @@ DELETE FROM Schedule WHERE id = @id;",
                     {
                         command.Parameters.AddWithValue(param.Key, dateTimeValue);
                     }
+                    else if (parameterValue is TimeSpan timeSpanValue)
+                    {
+                        command.Parameters.AddWithValue(param.Key, timeSpanValue);
+                    }
                     else if (parameterValue is Enum)
                     {
 
@@ -431,6 +466,10 @@ DELETE FROM Schedule WHERE id = @id;",
                     {
                         command.Parameters.AddWithValue(param.Key, dateTimeValue);
                     }
+                    else if (parameterValue is TimeSpan timeSpanValue)
+                    {
+                        command.Parameters.AddWithValue(param.Key, timeSpanValue);
+                    }
                     else if (parameterValue is Enum)
                     {
 
@@ -454,6 +493,23 @@ DELETE FROM Schedule WHERE id = @id;",
             {
                 var dateTimeValue = ConvertDateOnlyToDateTime(result);
                 return (T)(object)dateTimeValue;
+            }
+
+            if (typeof(T) == typeof(TimeSpan) && result.GetType().Name == "TimeOnly")
+            {
+                var timeOnlyType = result.GetType();
+                var hourProperty = timeOnlyType.GetProperty("Hour");
+                var minuteProperty = timeOnlyType.GetProperty("Minute");
+                var secondProperty = timeOnlyType.GetProperty("Second");
+
+                if (hourProperty != null && minuteProperty != null && secondProperty != null)
+                {
+                    var hour = Convert.ToInt32(hourProperty.GetValue(result));
+                    var minute = Convert.ToInt32(minuteProperty.GetValue(result));
+                    var second = Convert.ToInt32(secondProperty.GetValue(result));
+                    var timeSpanValue = new TimeSpan(hour, minute, second);
+                    return (T)(object)timeSpanValue;
+                }
             }
 
             return (T)Convert.ChangeType(result, typeof(T));
