@@ -133,7 +133,14 @@ public partial class StudentViewModel(IQueryService queryService) : BaseCrudView
         };
 
         var newId = await _queryService.ExecuteScalarAsync<int>(query, parameters);
-        item.Id = newId;
+        if (newId > 0)
+        {
+            item.Id = newId;
+        }
+        else
+        {
+            throw new Exception("Не удалось добавить запись. Возможно, нарушены ограничения БД.");
+        }
 
         await UpdateDisplayFieldsAsync(item);
     }
@@ -201,11 +208,6 @@ public partial class StudentViewModel(IQueryService queryService) : BaseCrudView
         }
     }
 
-    protected override bool IsNewItem(StudentDisplay item)
-    {
-        return item.Id == 0;
-    }
-
     protected override StudentDisplay CreateNewItem()
     {
         var defaultCity = Cities.FirstOrDefault();
@@ -214,18 +216,18 @@ public partial class StudentViewModel(IQueryService queryService) : BaseCrudView
 
         return new StudentDisplay
         {
-            Id = 0,
+            Id = -1,
             LastName = "Новая",
             FirstName = "Фамилия",
             MiddleName = "Отчество",
-            GenderEnum = "male",  
+            GenderEnum = "male",
             BirthDate = DateTime.Now.AddYears(-20),
             HasChildren = false,
             PhoneNumber = "+79990000000",
             Email = "student@example.com",
             Snils = "000-000-000 00",
-            StudentStatusEnum = "active",  
-            EducationBasisEnum = "budget",  
+            StudentStatusEnum = "active",
+            EducationBasisEnum = "budget",
             EnrollmentYear = DateTime.Now,
             Course = 1,
             ScholarshipAmount = 0,

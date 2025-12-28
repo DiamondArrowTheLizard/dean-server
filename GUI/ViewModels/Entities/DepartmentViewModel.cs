@@ -110,11 +110,6 @@ public partial class DepartmentViewModel(IQueryService queryService) : BaseCrudV
         await _queryService.ExecuteNonQueryAsync(query, parameters);
     }
 
-    protected override bool IsNewItem(DepartmentDisplay item)
-    {
-        return item.Id == 0;
-    }
-
     protected override DepartmentDisplay CreateNewItem()
     {
         if (!Faculties.Any())
