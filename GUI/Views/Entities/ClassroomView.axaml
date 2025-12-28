@@ -75,7 +75,7 @@
                     <DataGridTextColumn Header="ID" 
                                        Binding="{Binding Id}"
                                        Width="50"
-                                       IsReadOnly="True"/>
+                                       />
                     
                     
                     <DataGridTextColumn Header="Название аудитории" 

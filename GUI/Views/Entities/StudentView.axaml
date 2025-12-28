@@ -2,14 +2,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:GUI.ViewModels.Entities"
              xmlns:local="clr-namespace:GUI.Views.Entities"
-             x:Class="GUI.Views.Entities.DepartmentView"
-             x:DataType="vm:DepartmentViewModel">
+             x:Class="GUI.Views.Entities.StudentView"
+             x:DataType="vm:StudentViewModel">
     <Design.DataContext>
-        <vm:DepartmentViewModel/>
+        <vm:StudentViewModel/>
     </Design.DataContext>
     
     <Grid RowDefinitions="Auto, Auto, Auto, *">
-        
         
         <Border Grid.Row="0" Padding="10">
             <TextBlock Text="{Binding StatusMessage}" 
@@ -17,14 +16,12 @@
                        FontWeight="Bold"/>
         </Border>
         
-        
         <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="10" Margin="10">
             <TextBlock Text="Поиск:" VerticalAlignment="Center"/>
             <TextBox Text="{Binding SearchText}" Width="200"/>
             <Button Content="Найти" Command="{Binding SearchCommand}"/>
             <Button Content="Сброс" Command="{Binding LoadDataCommand}"/>
         </StackPanel>
-        
         
         <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="10" Margin="10">
             <Button Content="Загрузить" 
@@ -47,12 +44,10 @@
                     Command="{Binding ExportCommand}"
                     IsEnabled="{Binding Items.Count}"/>
             
-            
             <ProgressBar Minimum="0" Maximum="100" Value="0" 
                         IsVisible="{Binding IsLoading}"
                         Width="100" Height="20" Margin="10,0"/>
         </StackPanel>
-        
         
         <ScrollViewer Grid.Row="3" 
                       VerticalScrollBarVisibility="Auto"
@@ -68,24 +63,30 @@
                       BorderThickness="1"
                       BorderBrush="Gray"
                       Height="800"
-                      Width="1800">
+                      Width="2400">
                 
                 <DataGrid.Columns>
-                    
-                    <DataGridTextColumn Header="ID" 
-                                       Binding="{Binding Id}"
-                                       Width="50"/>
-                    
-                    
-                    <DataGridTextColumn Header="Название кафедры" 
-                                       Binding="{Binding DepartmentName, Mode=TwoWay}"
-                                       Width="400"
-                                       MinWidth="150"/>
-                    
-                    
-                    <DataGridTextColumn Header="Название факультета" 
-                                       Binding="{Binding FacultyName}"
-                                       Width="400"/>
+                    <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="50" />
+                    <DataGridTextColumn Header="Фамилия" Binding="{Binding LastName, Mode=TwoWay}" Width="150"/>
+                    <DataGridTextColumn Header="Имя" Binding="{Binding FirstName, Mode=TwoWay}" Width="150"/>
+                    <DataGridTextColumn Header="Отчество" Binding="{Binding MiddleName, Mode=TwoWay}" Width="150"/>
+                    <DataGridTextColumn Header="Пол" Binding="{Binding GenderEnum, Mode=TwoWay}" Width="80"/>
+                    <DataGridTextColumn Header="Дата рождения" Binding="{Binding BirthDate, StringFormat='yyyy-MM-dd', Mode=TwoWay}" Width="120"/>
+                    <DataGridCheckBoxColumn Header="Дети" Binding="{Binding HasChildren, Mode=TwoWay}" Width="60"/>
+                    <DataGridTextColumn Header="Телефон" Binding="{Binding PhoneNumber, Mode=TwoWay}" Width="150"/>
+                    <DataGridTextColumn Header="Email" Binding="{Binding Email, Mode=TwoWay}" Width="200"/>
+                    <DataGridTextColumn Header="СНИЛС" Binding="{Binding Snils, Mode=TwoWay}" Width="150"/>
+                    <DataGridTextColumn Header="Статус" Binding="{Binding StudentStatusEnum, Mode=TwoWay}" Width="120"/>
+                    <DataGridTextColumn Header="Основа" Binding="{Binding EducationBasisEnum, Mode=TwoWay}" Width="100"/>
+                    <DataGridTextColumn Header="Год поступления" Binding="{Binding EnrollmentYear, StringFormat='yyyy-MM-dd', Mode=TwoWay}" Width="130"/>
+                    <DataGridTextColumn Header="Курс" Binding="{Binding Course, Mode=TwoWay}" Width="60"/>
+                    <DataGridTextColumn Header="Стипендия" Binding="{Binding ScholarshipAmount, Mode=TwoWay}" Width="100"/>
+                    <DataGridTextColumn Header="Дом" Binding="{Binding HouseNumber, Mode=TwoWay}" Width="80"/>
+                    <DataGridTextColumn Header="Группа" Binding="{Binding GroupNumber}" Width="120" />
+                    <DataGridTextColumn Header="Улица" Binding="{Binding StreetName}" Width="200" />
+                    <DataGridTextColumn Header="Город" Binding="{Binding CityName}" Width="150" />
+                    <DataGridTextColumn Header="Специальность" Binding="{Binding CourseName}" Width="200" />
+                    <DataGridTextColumn Header="Факультет" Binding="{Binding FacultyName}" Width="200" />
                 </DataGrid.Columns>
                 
             </DataGrid>

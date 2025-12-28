@@ -1,7 +1,6 @@
 using System.Reflection;
 using Core.Interfaces.Services;
 using Interfaces.Models;
-using Models.Builders;
 using Npgsql;
 
 namespace Models.Services;
@@ -43,7 +42,76 @@ public class QueryService(IDatabaseConnectionString connectionString) : IQuerySe
                 SET classroom_name = @classroomName 
                 WHERE id = @id;",
 
-            ["DeleteClassroom"] = @"DELETE FROM Classroom WHERE id = @id;"
+            ["DeleteClassroom"] = @"DELETE FROM Classroom WHERE id = @id;",
+            ["GetAllStudents"] = @"SELECT 
+    s.id,
+    s.last_name AS LastName,
+    s.first_name AS FirstName,
+    s.middle_name AS MiddleName,
+    s.gender AS GenderEnum,
+    s.birth_date AS BirthDate,
+    s.has_children AS HasChildren,
+    s.phone_number AS PhoneNumber,
+    s.email AS Email,
+    s.snils AS Snils,
+    s.student_status AS StudentStatusEnum,
+    s.education_basis AS EducationBasisEnum,
+    s.enrollment_year AS EnrollmentYear,
+    s.course AS Course,
+    s.scholarship_amount AS ScholarshipAmount,
+    s.house_number AS HouseNumber,
+    s.id_studygroup AS IdStudyGroup,
+    s.id_street AS IdStreet,
+    s.id_city AS IdCity,
+    c.city_name AS CityName,
+    st.street_name AS StreetName,
+    sg.group_number AS GroupNumber,
+    cr.course_name AS CourseName,
+    f.faculty_name AS FacultyName
+FROM Student s
+LEFT JOIN City c ON s.id_city = c.id
+LEFT JOIN Street st ON s.id_street = st.id
+LEFT JOIN StudyGroup sg ON s.id_studygroup = sg.id
+LEFT JOIN Course cr ON sg.id_course = cr.id
+LEFT JOIN Faculty f ON cr.id_faculty = f.id
+ORDER BY s.id;",
+
+            ["GetAllCities"] = @"SELECT id, city_name AS CityName FROM City ORDER BY city_name;",
+            ["GetAllStreets"] = @"SELECT id, street_name AS StreetName FROM Street ORDER BY street_name;",
+            ["GetAllStudyGroups"] = @"SELECT sg.id, sg.group_number AS GroupNumber FROM StudyGroup sg ORDER BY sg.group_number;",
+
+            ["InsertStudent"] = @"INSERT INTO Student (
+    last_name, first_name, middle_name, gender, birth_date, has_children,
+    phone_number, email, snils, student_status, education_basis, enrollment_year,
+    course, scholarship_amount, house_number, id_studygroup, id_street, id_city
+) VALUES (
+    @lastName, @firstName, @middleName, @gender, @birthDate, @hasChildren,
+    @phoneNumber, @email, @snils, @studentStatus, @educationBasis, @enrollmentYear,
+    @course, @scholarshipAmount, @houseNumber, @idStudyGroup, @idStreet, @idCity
+) RETURNING id;",
+
+            ["UpdateStudent"] = @"UPDATE Student SET 
+    last_name = @lastName,
+    first_name = @firstName,
+    middle_name = @middleName,
+    gender = @gender,
+    birth_date = @birthDate,
+    has_children = @hasChildren,
+    phone_number = @phoneNumber,
+    email = @email,
+    snils = @snils,
+    student_status = @studentStatus,
+    education_basis = @educationBasis,
+    enrollment_year = @enrollmentYear,
+    course = @course,
+    scholarship_amount = @scholarshipAmount,
+    house_number = @houseNumber,
+    id_studygroup = @idStudyGroup,
+    id_street = @idStreet,
+    id_city = @idCity
+WHERE id = @id;",
+
+            ["DeleteStudent"] = @"DELETE FROM Student WHERE id = @id;",
         };
 
         return queries.ContainsKey(queryName) ? queries[queryName] : string.Empty;
@@ -61,13 +129,19 @@ public class QueryService(IDatabaseConnectionString connectionString) : IQuerySe
             ["GetAllClassrooms"] = "Получить все аудитории",
             ["InsertClassroom"] = "Добавить аудиторию",
             ["UpdateClassroom"] = "Обновить аудиторию",
-            ["DeleteClassroom"] = "Удалить аудиторию"
+            ["DeleteClassroom"] = "Удалить аудиторию",
+            ["GetAllStudents"] = "Получить всех студентов",
+            ["GetAllCities"] = "Получить все города",
+            ["GetAllStreets"] = "Получить все улицы",
+            ["GetAllStudyGroups"] = "Получить все группы",
+            ["InsertStudent"] = "Добавить студента",
+            ["UpdateStudent"] = "Обновить студента",
+            ["DeleteStudent"] = "Удалить студента"
         };
     }
 
     private void CheckConnection()
     {
-        Console.WriteLine($"Department connection: {_connectionString.ConnectionString}");
         if (string.IsNullOrEmpty(_connectionString.ConnectionString))
         {
             throw new InvalidOperationException("Строка подключения не установлена. Выполните аутентификацию.");
@@ -77,7 +151,7 @@ public class QueryService(IDatabaseConnectionString connectionString) : IQuerySe
     public async Task<IEnumerable<T>> ExecuteQueryAsync<T>(string query) where T : class, new()
     {
         CheckConnection();
-        
+
         var results = new List<T>();
         var connectionString = _connectionString.ConnectionString;
 
@@ -101,11 +175,112 @@ public class QueryService(IDatabaseConnectionString connectionString) : IQuerySe
                     if (prop != null && !reader.IsDBNull(i))
                     {
                         var value = reader.GetValue(i);
+                        var propType = prop.PropertyType;
 
-                        if (prop.PropertyType == typeof(string))
-                            prop.SetValue(item, value.ToString());
-                        else
-                            prop.SetValue(item, Convert.ChangeType(value, prop.PropertyType));
+                        try
+                        {
+                            object convertedValue;
+                            
+                            if (value == null || value is DBNull)
+                            {
+                                continue;
+                            }
+                            
+                            if (propType == typeof(string))
+                            {
+                                var stringValue = value.ToString();
+                                if (stringValue == null)
+                                {
+                                    throw new ArgumentNullException(nameof(value), $"Значение для свойства {propName} не может быть null");
+                                }
+                                convertedValue = stringValue;
+                            }
+                            else if (propType == typeof(int))
+                            {
+                                convertedValue = Convert.ToInt32(value);
+                            }
+                            else if (propType == typeof(bool))
+                            {
+                                convertedValue = Convert.ToBoolean(value);
+                            }
+                            else if (propType == typeof(DateTime))
+                            {
+                                if (value is DateTime dateTimeValue)
+                                {
+                                    convertedValue = dateTimeValue;
+                                }
+                                else if (value.GetType().Name == "DateOnly")
+                                {
+                                    var dateOnly = value;
+                                    var dateOnlyType = dateOnly.GetType();
+                                    var timeOnlyType = Type.GetType("System.TimeOnly, System.Private.CoreLib");
+                                    
+                                    if (timeOnlyType == null)
+                                    {
+                                        throw new InvalidOperationException("Не удалось найти тип System.TimeOnly");
+                                    }
+                                    
+                                    var toDateTimeMethod = dateOnlyType.GetMethod("ToDateTime", new[] { timeOnlyType });
+                                    
+                                    if (toDateTimeMethod == null)
+                                    {
+                                        throw new InvalidOperationException($"Не удалось найти метод ToDateTime в типе {dateOnlyType}");
+                                    }
+                                    
+                                    var timeOnlyMinValue = timeOnlyType.GetProperty("MinValue")?.GetValue(null);
+                                    
+                                    if (timeOnlyMinValue == null)
+                                    {
+                                        throw new InvalidOperationException("Не удалось получить значение TimeOnly.MinValue");
+                                    }
+                                    
+                                    var dateTimeResult = toDateTimeMethod.Invoke(dateOnly, new[] { timeOnlyMinValue });
+                                    
+                                    if (dateTimeResult == null)
+                                    {
+                                        throw new InvalidOperationException("Метод ToDateTime вернул null");
+                                    }
+                                    
+                                    convertedValue = (DateTime)dateTimeResult;
+                                }
+                                else
+                                {
+                                    convertedValue = Convert.ToDateTime(value);
+                                }
+                            }
+                            else if (propType == typeof(decimal))
+                            {
+                                convertedValue = Convert.ToDecimal(value);
+                            }
+                            else if (propType == typeof(double))
+                            {
+                                convertedValue = Convert.ToDouble(value);
+                            }
+                            else if (propType == typeof(float))
+                            {
+                                convertedValue = Convert.ToSingle(value);
+                            }
+                            else if (propType.IsEnum)
+                            {
+                                var enumString = value.ToString();
+                                if (enumString == null)
+                                {
+                                    throw new ArgumentNullException(nameof(value), $"Значение для перечисления {propName} не может быть null");
+                                }
+                                convertedValue = Enum.Parse(propType, enumString);
+                            }
+                            else
+                            {
+                                convertedValue = value;
+                            }
+                            
+                            prop.SetValue(item, convertedValue);
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"Ошибка преобразования значения {value} ({value.GetType()}) для свойства {propName} типа {propType}: {ex.Message}");
+                            throw;
+                        }
                     }
                 }
                 results.Add(item);
@@ -123,7 +298,7 @@ public class QueryService(IDatabaseConnectionString connectionString) : IQuerySe
     public async Task<int> ExecuteNonQueryAsync(string query, Dictionary<string, object>? parameters = null)
     {
         CheckConnection();
-        
+
         var connectionString = _connectionString.ConnectionString;
 
         try
@@ -137,7 +312,8 @@ public class QueryService(IDatabaseConnectionString connectionString) : IQuerySe
             {
                 foreach (var param in parameters)
                 {
-                    command.Parameters.AddWithValue(param.Key, param.Value ?? DBNull.Value);
+                    var parameterValue = param.Value ?? DBNull.Value;
+                    command.Parameters.AddWithValue(param.Key, parameterValue);
                 }
             }
 
@@ -153,7 +329,7 @@ public class QueryService(IDatabaseConnectionString connectionString) : IQuerySe
     public async Task<IEnumerable<Dictionary<string, object?>>> ExecuteQueryRawAsync(string query)
     {
         CheckConnection();
-        
+
         var results = new List<Dictionary<string, object?>>();
         var connectionString = _connectionString.ConnectionString;
 
@@ -189,7 +365,7 @@ public class QueryService(IDatabaseConnectionString connectionString) : IQuerySe
     public async Task<T?> ExecuteScalarAsync<T>(string query, Dictionary<string, object>? parameters = null)
     {
         CheckConnection();
-        
+
         var connectionString = _connectionString.ConnectionString;
 
         try
@@ -203,12 +379,52 @@ public class QueryService(IDatabaseConnectionString connectionString) : IQuerySe
             {
                 foreach (var param in parameters)
                 {
-                    command.Parameters.AddWithValue(param.Key, param.Value ?? DBNull.Value);
+                    var parameterValue = param.Value ?? DBNull.Value;
+                    command.Parameters.AddWithValue(param.Key, parameterValue);
                 }
             }
 
             var result = await command.ExecuteScalarAsync();
-            return result == null || result == DBNull.Value ? default : (T)Convert.ChangeType(result, typeof(T));
+            if (result == null || result == DBNull.Value)
+            {
+                return default;
+            }
+
+            if (typeof(T) == typeof(DateTime) && result.GetType().Name == "DateOnly")
+            {
+                var dateOnlyType = result.GetType();
+                var timeOnlyType = Type.GetType("System.TimeOnly, System.Private.CoreLib");
+                
+                if (timeOnlyType == null)
+                {
+                    throw new InvalidOperationException("Не удалось найти тип System.TimeOnly");
+                }
+                
+                var toDateTimeMethod = dateOnlyType.GetMethod("ToDateTime", new[] { timeOnlyType });
+                
+                if (toDateTimeMethod == null)
+                {
+                    throw new InvalidOperationException($"Не удалось найти метод ToDateTime в типе {dateOnlyType}");
+                }
+                
+                var timeOnlyMinValue = timeOnlyType.GetProperty("MinValue")?.GetValue(null);
+                
+                if (timeOnlyMinValue == null)
+                {
+                    throw new InvalidOperationException("Не удалось получить значение TimeOnly.MinValue");
+                }
+                
+                var dateTimeResult = toDateTimeMethod.Invoke(result, new[] { timeOnlyMinValue });
+                
+                if (dateTimeResult == null)
+                {
+                    throw new InvalidOperationException("Метод ToDateTime вернул null");
+                }
+                
+                return (T)dateTimeResult;
+            }
+
+            return (T)Convert.ChangeType(result, typeof(T));
         }
         catch (Exception ex)
         {

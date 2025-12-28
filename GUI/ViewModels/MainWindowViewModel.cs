@@ -62,6 +62,9 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]
     private ClassroomViewModel _classroomViewModel;
 
+    [ObservableProperty]
+    private StudentViewModel _studentViewModel;
+
     public MainWindowViewModel(
     IConnectionInfo connectionInfo,
     AuthenticationViewModel authenticationViewModel,
@@ -76,6 +79,7 @@ public partial class MainWindowViewModel : ViewModelBase
     ScientificSecretaryRoleViewModel scientificSecretaryRoleViewModel,
     DepartmentViewModel departmentViewModel,
     ClassroomViewModel classroomViewModel,
+    StudentViewModel studentViewModel,
     TeacherRoleViewModel teacherRoleViewModel)
     {
         _connectionInfo = connectionInfo;
@@ -100,6 +104,7 @@ public partial class MainWindowViewModel : ViewModelBase
 
         DepartmentViewModel = departmentViewModel;
         ClassroomViewModel = classroomViewModel;
+        StudentViewModel = studentViewModel;
 
         AuthenticationViewModel.OnButtonClicked += OnAuthentication;
 
@@ -204,7 +209,7 @@ public partial class MainWindowViewModel : ViewModelBase
     public void OpenStudyGroup() => ChangeView(TerminalWindowViewModel);
 
     [RelayCommand]
-    public void OpenStudent() => ChangeView(TerminalWindowViewModel);
+    public void OpenStudent() => ChangeView(StudentViewModel);
 
     [RelayCommand]
     public void OpenFacultyOrder() => ChangeView(TerminalWindowViewModel);
