@@ -72,11 +72,6 @@ public partial class ClassroomViewModel(IQueryService queryService) : BaseCrudVi
         await _queryService.ExecuteNonQueryAsync(query, parameters);
     }
 
-    protected override bool IsNewItem(ClassroomDisplay item)
-    {
-        return item.Id == 0;
-    }
-
     protected override ClassroomDisplay CreateNewItem()
     {
         return new ClassroomDisplay
