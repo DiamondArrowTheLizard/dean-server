@@ -21,7 +21,7 @@ public class QueryService(IDatabaseConnectionString connectionString) : IQuerySe
                 d.id_faculty AS IdFaculty
             FROM Department d
             JOIN Faculty f ON d.id_faculty = f.id
-            ORDER BY d.department_name;",
+            ORDER BY d.id;",
 
             ["GetAllFaculties"] = @"SELECT id, faculty_name AS FacultyName FROM Faculty ORDER BY faculty_name;",
 
