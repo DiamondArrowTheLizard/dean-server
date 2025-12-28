@@ -82,7 +82,11 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]
     private TeacherIndividualPlanViewModel _teacherIndividualPlanViewModel;
 
+    [ObservableProperty]
+    private CityViewModel _cityViewModel;
 
+    [ObservableProperty]
+    private StreetViewModel _streetViewModel;
 
 
 
@@ -107,7 +111,9 @@ public partial class MainWindowViewModel : ViewModelBase
         QualificationWorkViewModel qualificationWorkViewModel,
         CurriculumViewModel curriculumViewModel,
         StudyGroupViewModel studyGroupViewModel,
-        TeacherIndividualPlanViewModel teacherIndividualPlanViewModel)
+        TeacherIndividualPlanViewModel teacherIndividualPlanViewModel,
+        CityViewModel cityViewModel,
+        StreetViewModel streetViewModel)  
     {
         _connectionInfo = connectionInfo;
 
@@ -138,6 +144,8 @@ public partial class MainWindowViewModel : ViewModelBase
         CurriculumViewModel = curriculumViewModel;
         StudyGroupViewModel = studyGroupViewModel;
         TeacherIndividualPlanViewModel = teacherIndividualPlanViewModel;
+        CityViewModel = cityViewModel;
+        StreetViewModel = streetViewModel;
 
         AuthenticationViewModel.OnButtonClicked += OnAuthentication;
 
@@ -212,10 +220,10 @@ public partial class MainWindowViewModel : ViewModelBase
     public void OpenTerminal() => ChangeView(TerminalWindowViewModel);
 
     [RelayCommand]
-    public void OpenCity() => ChangeView(TerminalWindowViewModel);
+    public void OpenCity() => ChangeView(CityViewModel);
 
     [RelayCommand]
-    public void OpenStreet() => ChangeView(TerminalWindowViewModel);
+    public void OpenStreet() => ChangeView(StreetViewModel);
 
     [RelayCommand]
     public void OpenDepartment() => ChangeView(DepartmentViewModel);

@@ -77,8 +77,8 @@ LEFT JOIN Course cr ON sg.id_course = cr.id
 LEFT JOIN Faculty f ON cr.id_faculty = f.id
 ORDER BY s.id;",
 
-            ["GetAllCities"] = @"SELECT id, city_name AS CityName FROM City ORDER BY city_name;",
-            ["GetAllStreets"] = @"SELECT id, street_name AS StreetName FROM Street ORDER BY street_name;",
+            ["GetAllCities"] = @"SELECT id, city_name AS CityName FROM City ORDER BY id;",
+            ["GetAllStreets"] = @"SELECT id, street_name AS StreetName FROM Street ORDER BY id;",
             ["GetAllStudyGroups"] = @"SELECT 
     sg.id,
     sg.group_number AS GroupNumber,
@@ -348,6 +348,22 @@ WHERE id = @id;",
 DELETE FROM TeacherIndividualPlan_KnowledgeCheckType WHERE id_teacherindividualplan = @id;
 DELETE FROM TeacherIndividualPlan_Discipline WHERE id_teacherindividualplan = @id;
 DELETE FROM TeacherIndividualPlan WHERE id = @id;",
+            ["InsertCity"] = @"INSERT INTO City (city_name) VALUES (@cityName) RETURNING id;",
+
+            ["UpdateCity"] = @"UPDATE City SET city_name = @cityName WHERE id = @id;",
+
+            ["DeleteCity"] = @"DELETE FROM City WHERE id = @id;",
+
+            ["DeleteCityWithDependencies"] = @"DELETE FROM Student WHERE id_city = @id;
+DELETE FROM City WHERE id = @id;",
+            ["InsertStreet"] = @"INSERT INTO Street (street_name) VALUES (@streetName) RETURNING id;",
+
+            ["UpdateStreet"] = @"UPDATE Street SET street_name = @streetName WHERE id = @id;",
+
+            ["DeleteStreet"] = @"DELETE FROM Street WHERE id = @id;",
+
+            ["DeleteStreetWithDependencies"] = @"DELETE FROM Student WHERE id_street = @id;
+DELETE FROM Street WHERE id = @id;",
         };
 
         return queries.ContainsKey(queryName) ? queries[queryName] : string.Empty;
