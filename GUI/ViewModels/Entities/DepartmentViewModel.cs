@@ -135,11 +135,23 @@ public partial class DepartmentViewModel(IQueryService queryService) : BaseCrudV
 
     protected override IEnumerable<DepartmentDisplay> FilterItems(string searchText)
     {
-        var searchLower = searchText.ToLowerInvariant();
+        if (string.IsNullOrWhiteSpace(searchText))
+        {
+            return Items;
+        }
 
-        return Items.Where(d =>
-            (d.DepartmentName != null && d.DepartmentName.ToLowerInvariant().Contains(searchLower)) ||
-            (d.FacultyName != null && d.FacultyName.ToLowerInvariant().Contains(searchLower)));
+        if (int.TryParse(searchText, out int id))
+        {
+            return Items.Where(item => item.Id == id);
+        }
+        else
+        {
+            var searchLower = searchText.ToLowerInvariant();
+
+            return Items.Where(d =>
+                (d.DepartmentName != null && d.DepartmentName.ToLowerInvariant().Contains(searchLower)) ||
+                (d.FacultyName != null && d.FacultyName.ToLowerInvariant().Contains(searchLower)));
+        }
     }
 
     protected override Task<string> ExportDataAsync()

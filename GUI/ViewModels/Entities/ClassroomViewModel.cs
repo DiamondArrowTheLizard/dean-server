@@ -88,10 +88,22 @@ public partial class ClassroomViewModel(IQueryService queryService) : BaseCrudVi
 
     protected override IEnumerable<ClassroomDisplay> FilterItems(string searchText)
     {
-        var searchLower = searchText.ToLowerInvariant();
+        if (string.IsNullOrWhiteSpace(searchText))
+        {
+            return Items;
+        }
 
-        return Items.Where(d =>
-            (d.ClassroomName != null && d.ClassroomName.ToLowerInvariant().Contains(searchLower)));
+        if (int.TryParse(searchText, out int id))
+        {
+            return Items.Where(item => item.Id == id);
+        }
+        else
+        {
+            var searchLower = searchText.ToLowerInvariant();
+
+            return Items.Where(d =>
+                (d.ClassroomName != null && d.ClassroomName.ToLowerInvariant().Contains(searchLower)));
+        }
     }
 
     protected override Task<string> ExportDataAsync()
