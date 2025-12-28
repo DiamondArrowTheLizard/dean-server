@@ -316,6 +316,38 @@ DELETE FROM Student WHERE id_studygroup = @id;
 DELETE FROM StudyGroup_TeacherIndividualPlan WHERE id_studygroup = @id;
 DELETE FROM Curriculum WHERE id_studygroup = @id;
 DELETE FROM StudyGroup WHERE id = @id;",
+            ["GetAllTeacherIndividualPlans"] = @"SELECT 
+    tip.id,
+    tip.total_hours AS TotalHours,
+    tip.lecture_hours AS LectureHours,
+    tip.practice_hours AS PracticeHours,
+    tip.lab_hours AS LabHours,
+    tip.id_teacher AS IdTeacher,
+    t.last_name || ' ' || t.first_name || ' ' || t.middle_name AS TeacherName
+FROM TeacherIndividualPlan tip
+LEFT JOIN Teacher t ON tip.id_teacher = t.id
+ORDER BY tip.id;",
+
+            ["InsertTeacherIndividualPlan"] = @"INSERT INTO TeacherIndividualPlan (
+    total_hours, lecture_hours, practice_hours, lab_hours, id_teacher
+) VALUES (
+    @totalHours, @lectureHours, @practiceHours, @labHours, @idTeacher
+) RETURNING id;",
+
+            ["UpdateTeacherIndividualPlan"] = @"UPDATE TeacherIndividualPlan SET 
+    total_hours = @totalHours,
+    lecture_hours = @lectureHours,
+    practice_hours = @practiceHours,
+    lab_hours = @labHours,
+    id_teacher = @idTeacher
+WHERE id = @id;",
+
+            ["DeleteTeacherIndividualPlan"] = @"DELETE FROM TeacherIndividualPlan WHERE id = @id;",
+
+            ["DeleteTeacherIndividualPlanWithDependencies"] = @"DELETE FROM StudyGroup_TeacherIndividualPlan WHERE id_teacherindividualplan = @id;
+DELETE FROM TeacherIndividualPlan_KnowledgeCheckType WHERE id_teacherindividualplan = @id;
+DELETE FROM TeacherIndividualPlan_Discipline WHERE id_teacherindividualplan = @id;
+DELETE FROM TeacherIndividualPlan WHERE id = @id;",
         };
 
         return queries.ContainsKey(queryName) ? queries[queryName] : string.Empty;
