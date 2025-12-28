@@ -85,8 +85,8 @@ ORDER BY s.id;",
     phone_number, email, snils, student_status, education_basis, enrollment_year,
     course, scholarship_amount, house_number, id_studygroup, id_street, id_city
 ) VALUES (
-    @lastName, @firstName, @middleName, @gender, @birthDate, @hasChildren,
-    @phoneNumber, @email, @snils, @studentStatus, @educationBasis, @enrollmentYear,
+    @lastName, @firstName, @middleName, @gender::gender_enum, @birthDate, @hasChildren,
+    @phoneNumber, @email, @snils, @studentStatus::student_status_enum, @educationBasis::education_basis_enum, @enrollmentYear,
     @course, @scholarshipAmount, @houseNumber, @idStudyGroup, @idStreet, @idCity
 ) RETURNING id;",
 
@@ -94,14 +94,14 @@ ORDER BY s.id;",
     last_name = @lastName,
     first_name = @firstName,
     middle_name = @middleName,
-    gender = @gender,
+    gender = @gender::gender_enum,
     birth_date = @birthDate,
     has_children = @hasChildren,
     phone_number = @phoneNumber,
     email = @email,
     snils = @snils,
-    student_status = @studentStatus,
-    education_basis = @educationBasis,
+    student_status = @studentStatus::student_status_enum,
+    education_basis = @educationBasis::education_basis_enum,
     enrollment_year = @enrollmentYear,
     course = @course,
     scholarship_amount = @scholarshipAmount,
@@ -180,19 +180,15 @@ WHERE id = @id;",
                         try
                         {
                             object convertedValue;
-                            
+
                             if (value == null || value is DBNull)
                             {
                                 continue;
                             }
-                            
+
                             if (propType == typeof(string))
                             {
-                                var stringValue = value.ToString();
-                                if (stringValue == null)
-                                {
-                                    throw new ArgumentNullException(nameof(value), $"Значение для свойства {propName} не может быть null");
-                                }
+                                var stringValue = value.ToString() ?? throw new ArgumentNullException(nameof(value), $"Значение для свойства {propName} не может быть null");
                                 convertedValue = stringValue;
                             }
                             else if (propType == typeof(int))
@@ -211,37 +207,7 @@ WHERE id = @id;",
                                 }
                                 else if (value.GetType().Name == "DateOnly")
                                 {
-                                    var dateOnly = value;
-                                    var dateOnlyType = dateOnly.GetType();
-                                    var timeOnlyType = Type.GetType("System.TimeOnly, System.Private.CoreLib");
-                                    
-                                    if (timeOnlyType == null)
-                                    {
-                                        throw new InvalidOperationException("Не удалось найти тип System.TimeOnly");
-                                    }
-                                    
-                                    var toDateTimeMethod = dateOnlyType.GetMethod("ToDateTime", new[] { timeOnlyType });
-                                    
-                                    if (toDateTimeMethod == null)
-                                    {
-                                        throw new InvalidOperationException($"Не удалось найти метод ToDateTime в типе {dateOnlyType}");
-                                    }
-                                    
-                                    var timeOnlyMinValue = timeOnlyType.GetProperty("MinValue")?.GetValue(null);
-                                    
-                                    if (timeOnlyMinValue == null)
-                                    {
-                                        throw new InvalidOperationException("Не удалось получить значение TimeOnly.MinValue");
-                                    }
-                                    
-                                    var dateTimeResult = toDateTimeMethod.Invoke(dateOnly, new[] { timeOnlyMinValue });
-                                    
-                                    if (dateTimeResult == null)
-                                    {
-                                        throw new InvalidOperationException("Метод ToDateTime вернул null");
-                                    }
-                                    
-                                    convertedValue = (DateTime)dateTimeResult;
+                                    convertedValue = ConvertDateOnlyToDateTime(value);
                                 }
                                 else
                                 {
@@ -262,18 +228,14 @@ WHERE id = @id;",
                             }
                             else if (propType.IsEnum)
                             {
-                                var enumString = value.ToString();
-                                if (enumString == null)
-                                {
-                                    throw new ArgumentNullException(nameof(value), $"Значение для перечисления {propName} не может быть null");
-                                }
-                                convertedValue = Enum.Parse(propType, enumString);
+                                var enumString = value.ToString() ?? throw new ArgumentNullException(nameof(value), $"Значение для перечисления {propName} не может быть null");
+                                convertedValue = Enum.Parse(propType, enumString, true);
                             }
                             else
                             {
                                 convertedValue = value;
                             }
-                            
+
                             prop.SetValue(item, convertedValue);
                         }
                         catch (Exception ex)
@@ -295,6 +257,25 @@ WHERE id = @id;",
         return results;
     }
 
+    private DateTime ConvertDateOnlyToDateTime(object dateOnlyValue)
+    {
+        var dateOnlyType = dateOnlyValue.GetType();
+        var yearProperty = dateOnlyType.GetProperty("Year");
+        var monthProperty = dateOnlyType.GetProperty("Month");
+        var dayProperty = dateOnlyType.GetProperty("Day");
+
+        if (yearProperty == null || monthProperty == null || dayProperty == null)
+        {
+            throw new InvalidOperationException($"Не удалось найти свойства Year, Month, Day в типе {dateOnlyType}");
+        }
+
+        var year = (int)yearProperty.GetValue(dateOnlyValue);
+        var month = (int)monthProperty.GetValue(dateOnlyValue);
+        var day = (int)dayProperty.GetValue(dateOnlyValue);
+
+        return new DateTime(year, month, day);
+    }
+
     public async Task<int> ExecuteNonQueryAsync(string query, Dictionary<string, object>? parameters = null)
     {
         CheckConnection();
@@ -313,7 +294,19 @@ WHERE id = @id;",
                 foreach (var param in parameters)
                 {
                     var parameterValue = param.Value ?? DBNull.Value;
-                    command.Parameters.AddWithValue(param.Key, parameterValue);
+                    
+                    if (parameterValue is DateTime dateTimeValue)
+                    {
+                        command.Parameters.AddWithValue(param.Key, dateTimeValue);
+                    }
+                    else if (parameterValue is Enum)
+                    {
+                        command.Parameters.AddWithValue(param.Key, parameterValue.ToString().ToLower());
+                    }
+                    else
+                    {
+                        command.Parameters.AddWithValue(param.Key, parameterValue);
+                    }
                 }
             }
 
@@ -380,7 +373,19 @@ WHERE id = @id;",
                 foreach (var param in parameters)
                 {
                     var parameterValue = param.Value ?? DBNull.Value;
-                    command.Parameters.AddWithValue(param.Key, parameterValue);
+                    
+                    if (parameterValue is DateTime dateTimeValue)
+                    {
+                        command.Parameters.AddWithValue(param.Key, dateTimeValue);
+                    }
+                    else if (parameterValue is Enum)
+                    {
+                        command.Parameters.AddWithValue(param.Key, parameterValue.ToString().ToLower());
+                    }
+                    else
+                    {
+                        command.Parameters.AddWithValue(param.Key, parameterValue);
+                    }
                 }
             }
 
@@ -392,36 +397,8 @@ WHERE id = @id;",
 
             if (typeof(T) == typeof(DateTime) && result.GetType().Name == "DateOnly")
             {
-                var dateOnlyType = result.GetType();
-                var timeOnlyType = Type.GetType("System.TimeOnly, System.Private.CoreLib");
-                
-                if (timeOnlyType == null)
-                {
-                    throw new InvalidOperationException("Не удалось найти тип System.TimeOnly");
-                }
-                
-                var toDateTimeMethod = dateOnlyType.GetMethod("ToDateTime", new[] { timeOnlyType });
-                
-                if (toDateTimeMethod == null)
-                {
-                    throw new InvalidOperationException($"Не удалось найти метод ToDateTime в типе {dateOnlyType}");
-                }
-                
-                var timeOnlyMinValue = timeOnlyType.GetProperty("MinValue")?.GetValue(null);
-                
-                if (timeOnlyMinValue == null)
-                {
-                    throw new InvalidOperationException("Не удалось получить значение TimeOnly.MinValue");
-                }
-                
-                var dateTimeResult = toDateTimeMethod.Invoke(result, new[] { timeOnlyMinValue });
-                
-                if (dateTimeResult == null)
-                {
-                    throw new InvalidOperationException("Метод ToDateTime вернул null");
-                }
-                
-                return (T)dateTimeResult;
+                var dateTimeValue = ConvertDateOnlyToDateTime(result);
+                return (T)(object)dateTimeValue;
             }
 
             return (T)Convert.ChangeType(result, typeof(T));
