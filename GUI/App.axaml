@@ -3,14 +3,22 @@
              x:Class="GUI.App"
              xmlns:local="using:GUI"
              xmlns:themes="clr-namespace:Material.Styles.Themes;assembly=Material.Styles"
-             RequestedThemeVariant="Default">
-             <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
+             RequestedThemeVariant="{DynamicResource AppThemeVariant}">
 
     <Application.DataTemplates>
         <local:ViewLocator/>
     </Application.DataTemplates>
   
-  <Application.Styles>
-    <themes:MaterialTheme BaseTheme="Dark" PrimaryColor="Purple" SecondaryColor="Lime" />
-  </Application.Styles>
+    <Application.Resources>
+        <ThemeVariant x:Key="AppThemeVariant">Default</ThemeVariant>
+        
+        <x:Double x:Key="BaseFontSize">12</x:Double>
+        <x:Double x:Key="SmallFontSize">10</x:Double>
+        <x:Double x:Key="LargeFontSize">14</x:Double>
+        <x:Double x:Key="XLargeFontSize">16</x:Double>
+    </Application.Resources>
+  
+    <Application.Styles>
+        <themes:MaterialTheme PrimaryColor="Purple" SecondaryColor="Lime" />
+    </Application.Styles>
 </Application>

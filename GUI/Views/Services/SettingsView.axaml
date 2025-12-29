@@ -1,0 +1,156 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:GUI.ViewModels.Services"
+             x:Class="GUI.Views.Services.SettingsView"
+             x:DataType="vm:SettingsViewModel"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             d:DesignWidth="600"
+             d:DesignHeight="400">
+    
+    <Design.DataContext>
+        <vm:SettingsViewModel/>
+    </Design.DataContext>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="20" Spacing="15">
+
+            <TextBlock Text="Настройки приложения"
+                       FontSize="20"
+                       FontWeight="Bold"
+                       Margin="0,0,0,10"/>
+            
+            <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                    CornerRadius="8"
+                    Padding="15"
+                    BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+                    BorderThickness="1">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Тема оформления"
+                               FontSize="16"
+                               FontWeight="SemiBold"/>
+                    
+                    <ComboBox ItemsSource="{Binding Themes}"
+                              SelectedIndex="{Binding SelectedThemeIndex}"
+                              Margin="0,5,0,0">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding}"
+                                           FontSize="14"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    
+                    <TextBlock Text="Выберите тему оформления приложения. При выборе 'Системная' будет использоваться тема вашей операционной системы."
+                               FontSize="12"
+                               Foreground="Gray"
+                               TextWrapping="Wrap"/>
+                </StackPanel>
+            </Border>
+            
+            <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                    CornerRadius="8"
+                    Padding="15"
+                    BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+                    BorderThickness="1">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Размер шрифта"
+                               FontSize="16"
+                               FontWeight="SemiBold"/>
+                    
+                    <ComboBox ItemsSource="{Binding FontSizes}"
+                              SelectedIndex="{Binding SelectedFontSizeIndex}"
+                              Margin="0,5,0,0">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding}"
+                                           FontSize="14"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    
+                    <StackPanel Orientation="Horizontal" Spacing="10" Margin="0,10,0,0">
+                        <TextBlock Text="Пример текста с выбранным размером:"
+                                   FontSize="12"
+                                   Foreground="Gray"/>
+                        <TextBlock Text="Пример текста"
+                                   FontSize="{DynamicResource BaseFontSize}"
+                                   FontWeight="Medium"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+            
+            <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Right" Margin="0,20,0,0">
+                <Button Content="Сбросить"
+                        Command="{Binding ResetToDefaultsCommand}"
+                        Padding="20,8"
+                        Background="Transparent"
+                        BorderBrush="{DynamicResource SystemControlForegroundBaseHighBrush}"
+                        BorderThickness="1">
+                    <Button.Styles>
+                        <Style Selector="Button">
+                            <Setter Property="CornerRadius" Value="4"/>
+                        </Style>
+                        <Style Selector="Button:pointerover">
+                            <Setter Property="Background" Value="{DynamicResource SystemControlBackgroundListLowBrush}"/>
+                        </Style>
+                    </Button.Styles>
+                </Button>
+                
+                <Button Content="Применить"
+                        Command="{Binding ApplySettingsCommand}"
+                        Padding="20,8"
+                        Background="{DynamicResource SystemAccentColorBrush}"
+                        Foreground="White">
+                    <Button.Styles>
+                        <Style Selector="Button">
+                            <Setter Property="CornerRadius" Value="4"/>
+                            <Setter Property="BorderThickness" Value="0"/>
+                        </Style>
+                        <Style Selector="Button:pointerover">
+                            <Setter Property="Background" Value="{DynamicResource SystemAccentColorLight3Brush}"/>
+                        </Style>
+                    </Button.Styles>
+                </Button>
+            </StackPanel>
+            
+            <Border Background="{DynamicResource SystemAccentColorLight2Brush}"
+                    CornerRadius="8"
+                    Padding="15"
+                    Margin="0,20,0,0"
+                    IsVisible="{Binding ShowStatusMessage}"
+                    Opacity="0.9">
+                <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center">
+                    <TextBlock Text="✓"
+                               FontSize="16"
+                               Foreground="Green"
+                               VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding StatusMessage}"
+                               FontSize="14"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
+            </Border>
+            
+            <Border Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}"
+                    CornerRadius="8"
+                    Padding="15"
+                    Margin="0,20,0,0">
+                <StackPanel>
+                    <TextBlock Text="Примечания:"
+                               FontSize="14"
+                               FontWeight="SemiBold"
+                               Margin="0,0,0,5"/>
+                    <TextBlock Text="• Для применения некоторых настроек может потребоваться перезапуск приложения"
+                               FontSize="12"
+                               Foreground="Gray"
+                               TextWrapping="Wrap"/>
+                    <TextBlock Text="• Настройки сохраняются автоматически при нажатии кнопки 'Применить'"
+                               FontSize="12"
+                               Foreground="Gray"
+                               TextWrapping="Wrap"/>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

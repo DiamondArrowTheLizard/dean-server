@@ -10,6 +10,7 @@ using GUI.ViewModels.RoleMenus.HeadOfDepartment;
 using GUI.ViewModels.RoleMenus.Methodist;
 using GUI.ViewModels.RoleMenus.ScientificSecretary;
 using GUI.ViewModels.RoleMenus.Teacher;
+using GUI.ViewModels.Services;
 using GUI.ViewModels.Shared;
 using Interfaces.Models;
 
@@ -99,6 +100,9 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]
     private ProgramInfoViewModel _programInfoViewModel;
 
+    [ObservableProperty]
+    private SettingsViewModel _settingsViewModel;
+
     public MainWindowViewModel(
         IConnectionInfo connectionInfo,
         AuthenticationViewModel authenticationViewModel,
@@ -125,6 +129,7 @@ public partial class MainWindowViewModel : ViewModelBase
         StreetViewModel streetViewModel,
         ChartsViewModel chartsViewModel,
         ManualViewModel manualViewModel,
+        SettingsViewModel settingsViewModel,
         ProgramInfoViewModel programInfoViewModel)  
     {
         _connectionInfo = connectionInfo;
@@ -162,6 +167,7 @@ public partial class MainWindowViewModel : ViewModelBase
         ChartsViewModel = chartsViewModel;
         ManualViewModel = manualViewModel;
         ProgramInfoViewModel = programInfoViewModel;
+        SettingsViewModel = settingsViewModel;
 
         AuthenticationViewModel.OnButtonClicked += OnAuthentication;
     }
@@ -259,7 +265,7 @@ public partial class MainWindowViewModel : ViewModelBase
     public void OpenManual() => ChangeView(ManualViewModel);
 
     [RelayCommand]
-    public void OpenSettings() => ChangeView(TerminalWindowViewModel);
+    public void OpenSettings() => ChangeView(SettingsViewModel);
 
     [RelayCommand]
     public void OpenStudyGroup() => ChangeView(StudyGroupViewModel);

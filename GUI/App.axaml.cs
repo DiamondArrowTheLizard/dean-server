@@ -27,6 +27,7 @@ using Models.Services;
 using Interfaces.Services;
 using GUI.ViewModels.Charts;
 using GUI.ViewModels.Help;
+using GUI.ViewModels.Services;
 
 namespace GUI;
 
@@ -119,6 +120,7 @@ public partial class App : Application
         collection.AddTransient<StreetViewModel>();
         collection.AddTransient<ManualViewModel>();
         collection.AddTransient<ProgramInfoViewModel>();
+        collection.AddTransient<SettingsViewModel>();
         
         return collection;
     }
