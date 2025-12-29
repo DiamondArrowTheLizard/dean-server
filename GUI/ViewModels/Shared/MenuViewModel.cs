@@ -29,6 +29,7 @@ public partial class MenuViewModel : ViewModelBase
         OnSettingsOpen += view.OpenSettings;
         OnChangePasswordOpen += view.OpenChangePassword;
         OnChartsOpen += view.OpenCharts;
+        OnAboutOpen += view.OpenAbout;
     }
 
     [RelayCommand]

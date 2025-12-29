@@ -118,6 +118,7 @@ public partial class App : Application
         collection.AddTransient<CityViewModel>();
         collection.AddTransient<StreetViewModel>();
         collection.AddTransient<ManualViewModel>();
+        collection.AddTransient<ProgramInfoViewModel>();
         
         return collection;
     }

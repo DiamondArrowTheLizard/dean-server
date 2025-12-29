@@ -96,6 +96,9 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]
     private ManualViewModel _manualViewModel;
 
+    [ObservableProperty]
+    private ProgramInfoViewModel _programInfoViewModel;
+
     public MainWindowViewModel(
         IConnectionInfo connectionInfo,
         AuthenticationViewModel authenticationViewModel,
@@ -121,7 +124,8 @@ public partial class MainWindowViewModel : ViewModelBase
         CityViewModel cityViewModel,
         StreetViewModel streetViewModel,
         ChartsViewModel chartsViewModel,
-        ManualViewModel manualViewModel)  
+        ManualViewModel manualViewModel,
+        ProgramInfoViewModel programInfoViewModel)  
     {
         _connectionInfo = connectionInfo;
 
@@ -157,6 +161,7 @@ public partial class MainWindowViewModel : ViewModelBase
 
         ChartsViewModel = chartsViewModel;
         ManualViewModel = manualViewModel;
+        ProgramInfoViewModel = programInfoViewModel;
 
         AuthenticationViewModel.OnButtonClicked += OnAuthentication;
     }
@@ -294,5 +299,8 @@ public partial class MainWindowViewModel : ViewModelBase
 
     [RelayCommand]
     public void OpenCharts() => ChangeView(ChartsViewModel);
+
+    [RelayCommand]
+    public void OpenAbout() => ChangeView(ProgramInfoViewModel);
 
 }

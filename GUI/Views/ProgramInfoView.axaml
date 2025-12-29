@@ -1,0 +1,42 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:GUI.ViewModels"
+             mc:Ignorable="d"
+             d:DesignWidth="400"
+             d:DesignHeight="100"
+             x:Class="GUI.Views.ProgramInfoView"
+             x:DataType="vm:ProgramInfoViewModel">
+    
+    <Border BorderBrush="Gray" 
+            BorderThickness="1" 
+            CornerRadius="4"
+            Padding="16">
+        <StackPanel Spacing="4">
+            <TextBlock Text="{Binding ProgramName}"
+                       FontSize="16"
+                       FontWeight="Bold"
+                       HorizontalAlignment="Center"/>
+            
+            <TextBlock Text="{Binding AuthorName}"
+                       FontSize="12"
+                       HorizontalAlignment="Center"/>
+            
+            <TextBlock Text="{Binding StudentGroup}"
+                       FontSize="12"
+                       FontStyle="Italic"
+                       HorizontalAlignment="Center"/>
+            
+            <TextBlock Text="{Binding Version}"
+                       FontSize="10"
+                       Foreground="Gray"
+                       HorizontalAlignment="Center"/>
+            
+            <TextBlock Text="{Binding License}"
+                       FontSize="10"
+                       Foreground="Gray"
+                       HorizontalAlignment="Center"/>
+        </StackPanel>
+    </Border>
+</UserControl>
